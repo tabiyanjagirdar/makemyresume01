@@ -17,18 +17,6 @@ const resourcePeople = [
         linkedin: "https://in.linkedin.com/in/tabiyanjagirdar",
     },
     {
-
-        name: "Ravi Kumar",
-        image: "https://via.placeholder.com/150",
-        companyLogo: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/49/Cognizant_logo_2022.svg/512px-Cognizant_logo_2022.svg.png",
-        linkedin: "https://www.linkedin.com/in/ravi-kumar",
-    },
-    {
-        name: "Priya Desai",
-        image: "https://via.placeholder.com/150",
-        companyLogo: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e9/LTI_Mindtree_logo.svg/512px-LTI_Mindtree_logo.svg.png",
-        linkedin: "https://www.linkedin.com/in/priya-desai",
-
         name: "Chetan Kudla",
         image: Chetan,
         companyLogo: pyspider,
