@@ -52,7 +52,7 @@ const HeroSection = () => {
     return (
         <section
             id="home"
-            className="flex-grow flex items-center justify-center text-center px-4 py-16 min-h-screen"
+            className="flex-grow pt-[10px] flex items-center justify-center text-center px-4 py-16 min-h-screen"
             style={{
                 backgroundImage: `url(${bgHero})`,
                 backgroundSize: 'cover',
@@ -130,6 +130,12 @@ const HeroSection = () => {
                             required
                         />
                     </label>
+                    <p className="mt-1 text-xs text-center text-gray-700 font-medium bg-yellow-100 px-4 py-2 rounded-lg shadow-sm">
+                        📄 Upload your current resume — <span className="font-semibold text-blue-600">we’ll make it ATS-friendly</span> and help it reach <span className="font-semibold text-green-600">HR directly</span>!
+                    </p>
+
+
+
 
                     <button
                         type="submit"
