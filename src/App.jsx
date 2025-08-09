@@ -129,7 +129,7 @@ const App = () => {
             <a href="https://wa.me/919449723865" className="p-3 rounded-full border-2 border-black text-green-600 hover:scale-110 transition">
               <FaWhatsapp className="text-3xl" />
             </a>
-            <a href="https://www.instagram.com/makemyresume01?igsh=eHIyeWZxcTZmcWl2" target="_blank" rel="noopener noreferrer" className="p-3 rounded-full border-2 border-black text-pink-600 hover:scale-110 transition">
+            <a href="https://www.instagram.com/makemyresume.help?igsh=eHIyeWZxcTZmcWl2" target="_blank" rel="noopener noreferrer" className="p-3 rounded-full border-2 border-black text-pink-600 hover:scale-110 transition">
               <FaInstagram className="text-3xl" />
             </a>
             <a href="mailto:studybrokud@example.com" className="p-3 rounded-full border-2 border-black text-blue-600 hover:scale-110 transition">
