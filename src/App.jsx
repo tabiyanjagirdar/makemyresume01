@@ -58,7 +58,7 @@ const App = () => {
         <div className="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
           <img
             src={resumebro}
-            alt="ResumeBro Logo"
+            alt="Make My Resume Logo"
             className="h-12 md:h-16 w-auto object-contain"
           />
 

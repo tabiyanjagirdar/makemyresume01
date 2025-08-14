@@ -91,7 +91,7 @@ Price Paid: ₹${price}
 Referral Code: ${referralCode || "None"}
 Discount: ${discountPercent}%`;
 
-            setWhatsappLink(`https://wa.me/919964198118?text=${encodeURIComponent(message)}`);
+            setWhatsappLink(`https://wa.me/919449723865?text=${encodeURIComponent(message)}`);
             setName("");
             setMobile("");
             setFile(null);
