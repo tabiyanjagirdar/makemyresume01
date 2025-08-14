@@ -135,7 +135,7 @@ const HeroSection = () => {
                         className="px-4 py-2 border border-gray-300 rounded-lg w-full text-gray-700"
                     >
                         <option value="">Select Plan</option>
-                        <option value="49">₹49 Plan – Resume + 1 Free Course</option>
+                        {/* <option value="49">₹49 Plan – Resume + 1 Free Course</option> */}
                         <option value="99">₹99 Plan – Resume + 2 Courses + Free Placement Prep Materials</option>
                     </select>
 
