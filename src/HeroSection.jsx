@@ -119,16 +119,17 @@ Discount: ${discountPercent}%`;
                 style={{ boxShadow: "0 0 40px 12px rgba(255, 255, 255, 0.5)" }}
             >
                 {/* Social Proof */}
-                <div className="mb-4 flex items-center gap-3 bg-white/60 px-6 py-2 rounded-xl border border-gray-200 w-fit">
-                    <div className="flex -space-x-2">
+                <div className="mb-4 flex items-center justify-center gap-3 bg-white/60 px-4 py-2 rounded-xl border border-gray-200">
+                    <div className="flex -space-x-2 items-center">
                         <img src={boy} alt="student" className="w-10 h-10 rounded-full border-2 border-white" />
                         <img src={girl} alt="student" className="w-10 h-10 rounded-full border-2 border-white" />
                         <img src={boy2} alt="student" className="w-10 h-10 rounded-full border-2 border-white" />
                     </div>
-                    <p className="text-sm text-gray-800 font-medium">
-                        Trusted by <span className="text-green-600 font-bold">100+</span> job seekers 🚀
+                    <p className="text-sm text-gray-800 font-medium flex items-center whitespace-nowrap">
+                        Trusted by <span className="text-green-600 font-bold mx-1">100+</span> job seekers 🚀
                     </p>
                 </div>
+
 
                 {/* Heading */}
                 <h1 className="text-xl sm:text-2xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-3">
