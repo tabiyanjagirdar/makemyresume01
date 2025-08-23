@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { db, storage } from "./firebase";
-import { collection, addDoc, getDocs, deleteDoc, doc, query, where } from "firebase/firestore";
+import { collection, addDoc, getDocs, deleteDoc, doc } from "firebase/firestore";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
 function PostCourse() {
@@ -15,32 +15,45 @@ function PostCourse() {
     const categories = ["Web Development", "Data Science", "AI & ML", "Programming", "Other"];
 
     const fetchCourses = async () => {
-        const querySnapshot = await getDocs(collection(db, "courses"));
-        const now = new Date();
-        const oneWeekAgo = new Date(now);
-        oneWeekAgo.setDate(now.getDate() - 7);
+        try {
+            const querySnapshot = await getDocs(collection(db, "courses"));
+            const now = new Date();
+            const oneWeekAgo = new Date(now);
+            oneWeekAgo.setDate(now.getDate() - 7);
 
-        // Filter out courses older than 7 days
-        const filteredCourses = querySnapshot.docs
-            .map((doc) => ({ id: doc.id, ...doc.data() }))
-            .filter((course) => {
+            const allCourses = querySnapshot.docs.map((docSnap) => {
+                const data = docSnap.data();
+                return { id: docSnap.id, ...data };
+            });
+
+            // Auto-delete old courses (>7 days)
+            allCourses.forEach(async (course) => {
+                if (course.createdAt) {
+                    const courseDate = course.createdAt.toDate ? course.createdAt.toDate() : new Date(course.createdAt);
+                    if (courseDate < oneWeekAgo) {
+                        await deleteDoc(doc(db, "courses", course.id));
+                    }
+                }
+            });
+
+            // Filter courses newer than 7 days
+            const filteredCourses = allCourses.filter((course) => {
                 if (!course.createdAt) return true;
                 const courseDate = course.createdAt.toDate ? course.createdAt.toDate() : new Date(course.createdAt);
                 return courseDate >= oneWeekAgo;
             });
 
-        setCourses(filteredCourses);
+            // Sort newest first
+            const sortedCourses = filteredCourses.sort((a, b) => {
+                const dateA = a.createdAt?.toDate ? a.createdAt.toDate() : new Date(a.createdAt);
+                const dateB = b.createdAt?.toDate ? b.createdAt.toDate() : new Date(b.createdAt);
+                return dateB - dateA;
+            });
 
-        // Optional: auto-delete old courses
-        querySnapshot.docs.forEach(async (docSnap) => {
-            const course = docSnap.data();
-            if (course.createdAt) {
-                const courseDate = course.createdAt.toDate ? course.createdAt.toDate() : new Date(course.createdAt);
-                if (courseDate < oneWeekAgo) {
-                    await deleteDoc(doc(db, "courses", docSnap.id));
-                }
-            }
-        });
+            setCourses(sortedCourses);
+        } catch (err) {
+            console.error("Error fetching courses:", err);
+        }
     };
 
     useEffect(() => {
@@ -51,7 +64,6 @@ function PostCourse() {
         e.preventDefault();
         try {
             let imageUrl = "";
-
             if (image) {
                 const imageRef = ref(storage, `courseImages/${Date.now()}_${image.name}`);
                 await uploadBytes(imageRef, image);
@@ -66,7 +78,7 @@ function PostCourse() {
                 link,
                 imageUrl,
                 category: finalCategory,
-                createdAt: new Date() // Timestamp
+                createdAt: new Date(),
             });
 
             alert("✅ Course added successfully!");
@@ -84,21 +96,19 @@ function PostCourse() {
     };
 
     const handleDelete = async (id) => {
-        const confirmDelete = window.confirm("Are you sure you want to delete this course?");
-        if (!confirmDelete) return;
-
+        if (!window.confirm("Are you sure you want to delete this course?")) return;
         try {
             await deleteDoc(doc(db, "courses", id));
-            setCourses(courses.filter((course) => course.id !== id));
-            alert("Course deleted successfully!");
-        } catch (error) {
-            console.error("Error deleting course:", error);
-            alert("Failed to delete course.");
+            setCourses(courses.filter((c) => c.id !== id));
+            alert("✅ Course deleted successfully!");
+        } catch (err) {
+            console.error("Error deleting course:", err);
+            alert("❌ Failed to delete course");
         }
     };
 
     const getDateLabel = (date) => {
-        const courseDate = date.toDate ? date.toDate() : new Date(date);
+        const courseDate = date?.toDate ? date.toDate() : new Date(date);
         const today = new Date();
         const yesterday = new Date();
         yesterday.setDate(today.getDate() - 1);
@@ -119,26 +129,24 @@ function PostCourse() {
     };
 
     return (
-        <div style={{ padding: "20px" }}>
-            <h2 className="text-2xl font-bold mb-4">Admin Panel - Add Course</h2>
+        <div className="p-6">
+            <h2 className="text-2xl font-bold mb-6">Admin Panel - Add Course</h2>
 
-            {/* Add Course Form */}
-            <form
-                onSubmit={handleSubmit}
-                style={{ display: "flex", flexDirection: "column", gap: "10px", maxWidth: "400px" }}
-            >
+            <form className="flex flex-col gap-3 max-w-md" onSubmit={handleSubmit}>
                 <input
                     type="text"
                     placeholder="Course Title"
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
                     required
+                    className="border p-2 rounded"
                 />
                 <textarea
                     placeholder="Course Description"
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
                     required
+                    className="border p-2 rounded"
                 />
                 <input
                     type="text"
@@ -146,15 +154,19 @@ function PostCourse() {
                     value={link}
                     onChange={(e) => setLink(e.target.value)}
                     required
+                    className="border p-2 rounded"
                 />
                 <select
                     value={category}
                     onChange={(e) => setCategory(e.target.value)}
                     required
+                    className="border p-2 rounded"
                 >
                     <option value="">Select Category</option>
                     {categories.map((cat) => (
-                        <option key={cat} value={cat}>{cat}</option>
+                        <option key={cat} value={cat}>
+                            {cat}
+                        </option>
                     ))}
                 </select>
                 {category === "Other" && (
@@ -164,19 +176,20 @@ function PostCourse() {
                         value={otherCategory}
                         onChange={(e) => setOtherCategory(e.target.value)}
                         required
+                        className="border p-2 rounded"
                     />
                 )}
                 <input
                     type="file"
                     accept="image/*"
                     onChange={(e) => setImage(e.target.files[0])}
+                    className="border p-2 rounded"
                 />
-                <button type="submit" className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
+                <button type="submit" className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
                     Add Course
                 </button>
             </form>
 
-            {/* Course List with Delete */}
             <h3 className="text-xl font-semibold mt-8 mb-4">All Courses</h3>
             {courses.length > 0 ? (
                 <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -212,7 +225,7 @@ function PostCourse() {
                     ))}
                 </div>
             ) : (
-                <p className="mt-4">No courses found.</p>
+                <p>No courses found.</p>
             )}
         </div>
     );
