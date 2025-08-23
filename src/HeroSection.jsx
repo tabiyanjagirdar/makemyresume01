@@ -41,7 +41,9 @@ const HeroSection = () => {
         const discount = VALID_CODES[code] || 0;
         setDiscountPercent(discount);
         const discountedPrice =
-            discount > 0 ? Math.round(BASE_PRICE - (BASE_PRICE * discount) / 100) : BASE_PRICE;
+            discount > 0
+                ? Math.round(BASE_PRICE - (BASE_PRICE * discount) / 100)
+                : BASE_PRICE;
         setPrice(discountedPrice);
     };
 
@@ -58,6 +60,7 @@ const HeroSection = () => {
 
         try {
             setLoading(true);
+
             const fileRef = ref(storage, `resumes/${Date.now()}-${file.name}`);
             await uploadBytes(fileRef, file);
             const fileURL = await getDownloadURL(fileRef);
@@ -103,9 +106,28 @@ Discount: ${discountPercent}%`;
                 backgroundPosition: "center",
             }}
         >
-            <div className="w-full max-w-[95%] md:w-[700px] lg:w-[900px] xl:w-[1100px] bg-white/85 text-gray-900 px-6 py-10 md:px-10 md:py-14 rounded-3xl md:rounded-[5rem] flex flex-col items-center">
+            <div className="w-full max-w-[95%] md:w-[700px] lg:w-[900px] xl:w-[1100px] bg-white/90 text-gray-900 px-6 py-10 md:px-10 md:py-14 rounded-3xl md:rounded-[5rem] flex flex-col items-center shadow-lg">
+
+                {/* Professional ₹99 Plan Card */}
+                <div className="bg-gradient-to-r from-yellow-100 to-yellow-200 border border-yellow-400 p-6 md:p-8 rounded-2xl mb-6 w-full max-w-md text-left shadow-md">
+                    <h2 className="text-2xl md:text-3xl font-bold text-yellow-800 mb-3 flex items-center gap-2">
+                        🚀 ₹99 Resume Plan
+                    </h2>
+                    <ul className="list-disc list-inside text-gray-800 space-y-2 text-sm md:text-base">
+                        <li>✅ ATS-Optimized Resume</li>
+                        <li>🎨 Premium Design</li>
+                        <li>🎓 2 Udemy Certificate Courses</li>
+                        <li>🧠 1-on-1 Career Consultation</li>
+                    </ul>
+                    {discountPercent > 0 && (
+                        <p className="mt-3 text-green-700 font-semibold">
+                            🎉 Referral applied! {discountPercent}% off — Pay ₹{price} only
+                        </p>
+                    )}
+                </div>
+
                 {/* Social Proof */}
-                <div className="mb-4 flex items-center justify-center gap-3 bg-white/60 px-4 py-2 rounded-xl border border-gray-200">
+                <div className="mb-6 flex items-center justify-center gap-3 bg-white/60 px-4 py-2 rounded-xl border border-gray-200">
                     <div className="flex -space-x-2 items-center">
                         <img src={boy} alt="student" className="w-10 h-10 rounded-full border-2 border-white" />
                         <img src={girl} alt="student" className="w-10 h-10 rounded-full border-2 border-white" />
@@ -125,29 +147,34 @@ Discount: ${discountPercent}%`;
 
                 {!success ? (
                     <form onSubmit={handleSubmit} className="flex flex-col gap-4 w-full max-w-md">
+
+                        {/* Name Input */}
                         <input
                             type="text"
                             placeholder="Your Name"
                             value={name}
                             onChange={(e) => setName(e.target.value)}
                             required
-                            className="px-4 py-2 border border-gray-300 rounded-lg w-full"
+                            className="px-4 py-2 border border-gray-300 rounded-lg w-full focus:ring-2 focus:ring-yellow-400"
                         />
+
                         <input
                             type="text"
                             placeholder="Mobile Number"
                             value={mobile}
                             onChange={(e) => setMobile(e.target.value)}
                             required
-                            className="px-4 py-2 border border-gray-300 rounded-lg w-full"
+                            className="px-4 py-2 border border-gray-300 rounded-lg w-full focus:ring-2 focus:ring-yellow-400"
                         />
+
                         <input
                             type="text"
                             placeholder="Referral Code (Optional)"
                             value={referralCode}
                             onChange={handleReferralChange}
-                            className="px-4 py-2 border border-gray-300 rounded-lg w-full"
+                            className="px-4 py-2 border border-gray-300 rounded-lg w-full focus:ring-2 focus:ring-yellow-400"
                         />
+
                         <label className="inline-flex items-center cursor-pointer bg-blue-600 text-white px-6 py-3 rounded-full shadow hover:bg-blue-700 transition w-full justify-center">
                             <FiUpload className="mr-2 text-xl" />
                             {file ? "File Selected ✅" : "Upload Your Resume"}
@@ -158,12 +185,13 @@ Discount: ${discountPercent}%`;
                                 required
                             />
                         </label>
+
                         <button
                             type="submit"
                             disabled={loading}
                             className="bg-green-600 text-white px-6 py-3 rounded-full hover:bg-green-700 transition disabled:opacity-60"
                         >
-                            {loading ? "Processing..." : "Submit"}
+                            {loading ? "Processing..." : `Submit & Pay ₹${price}`}
                         </button>
                     </form>
                 ) : (
