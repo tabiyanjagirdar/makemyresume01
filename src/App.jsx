@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
-
+import { Analytics } from "@vercel/analytics/next"
 import Services from "./Services";
 import AboutUs from "./AboutUs";
 import CompanySlider from "./CompanySlider";
@@ -113,6 +113,7 @@ const App = () => {
               path="/"
               element={
                 <>
+                  <Analytics />
                   <HeroSection />
                   <Services />
                   <CompanySlider />
