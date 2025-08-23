@@ -2,13 +2,19 @@ import React from 'react';
 import { FaLinkedin } from 'react-icons/fa';
 import Tabiyan from './assets/Tabiyan.jpg';
 import cognizant from './assets/cognizant.png';
+<<<<<<< HEAD
 
+=======
+>>>>>>> origin/master
 import pyspider from './assets/pyspider.png';
 import Chetan from './assets/Chetan.jpg';
 import stand from './assets/stand.png';
 import veeru from './assets/veeru.jpg';
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> origin/master
 const resourcePeople = [
     {
         name: "Tabiyan Jagirdar",
@@ -27,7 +33,10 @@ const resourcePeople = [
         image: veeru,
         companyLogo: stand,
         linkedin: "https://www.linkedin.com/in/veeranagouda-patil-529233326",
+<<<<<<< HEAD
 
+=======
+>>>>>>> origin/master
     },
 ];
 
