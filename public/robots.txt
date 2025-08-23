@@ -1,3 +1,7 @@
 User-agent: *
+Disallow: /admin/
+Disallow: /login/
+Disallow: /register/
 Allow: /
+
 Sitemap: https://makemyresume.help/sitemap.xml
