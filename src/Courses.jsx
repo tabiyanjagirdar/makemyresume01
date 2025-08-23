@@ -4,21 +4,17 @@ import { collection, getDocs } from "firebase/firestore";
 
 // Levenshtein distance for fuzzy search
 function levenshtein(a, b) {
-    const dp = Array.from({ length: a.length + 1 }, () =>
-        Array(b.length + 1).fill(0)
-    );
-    for (let i = 0; i <= a.length; i++) dp[i][0] = i;
-    for (let j = 0; j <= b.length; j++) dp[0][j] = j;
-
-    for (let i = 1; i <= a.length; i++) {
-        for (let j = 1; j <= b.length; j++) {
+    const m = a.length, n = b.length;
+    const dp = Array.from({ length: m + 1 }, () => Array(n + 1).fill(0));
+    for (let i = 0; i <= m; i++) dp[i][0] = i;
+    for (let j = 0; j <= n; j++) dp[0][j] = j;
+    for (let i = 1; i <= m; i++) {
+        for (let j = 1; j <= n; j++) {
             if (a[i - 1] === b[j - 1]) dp[i][j] = dp[i - 1][j - 1];
-            else
-                dp[i][j] =
-                    1 + Math.min(dp[i - 1][j], dp[i][j - 1], dp[i - 1][j - 1]);
+            else dp[i][j] = 1 + Math.min(dp[i - 1][j], dp[i][j - 1], dp[i - 1][j - 1]);
         }
     }
-    return dp[a.length][b.length];
+    return dp[m][n];
 }
 
 function Courses() {
@@ -31,41 +27,40 @@ function Courses() {
     useEffect(() => {
         const fetchCourses = async () => {
             const querySnapshot = await getDocs(collection(db, "courses"));
-            const oneWeekAgo = new Date();
-            oneWeekAgo.setDate(new Date().getDate() - 7);
-
-            const recentCourses = querySnapshot.docs
+            const allCourses = querySnapshot.docs
                 .map((doc) => ({ id: doc.id, ...doc.data() }))
-                .filter((course) => {
-                    if (!course.createdAt) return true;
-                    const courseDate = course.createdAt.toDate
-                        ? course.createdAt.toDate()
-                        : new Date(course.createdAt);
-                    return courseDate >= oneWeekAgo;
+                .sort((a, b) => {
+                    const dateA = a.createdAt?.toDate ? a.createdAt.toDate() : new Date(a.createdAt);
+                    const dateB = b.createdAt?.toDate ? b.createdAt.toDate() : new Date(b.createdAt);
+                    return dateB - dateA;
                 });
-
-            setCourses(recentCourses);
+            setCourses(allCourses);
         };
         fetchCourses();
     }, []);
 
     const categories = ["All", ...new Set(courses.map((c) => c.category))];
-    const visibleCategories = showAllCategories
-        ? categories
-        : categories.slice(0, 5);
+    const visibleCategories = showAllCategories ? categories : categories.slice(0, 5);
 
-    const filteredCourses = courses.filter(
-        (course) =>
-            (category === "All" || course.category === category) &&
-            (course.title.toLowerCase().includes(search.toLowerCase()) ||
-                course.description.toLowerCase().includes(search.toLowerCase()))
-    );
+    const filteredCourses = courses
+        .filter(
+            (course) =>
+                (category === "All" || course.category === category) &&
+                (course.title.toLowerCase().includes(search.toLowerCase()) ||
+                    course.description.toLowerCase().includes(search.toLowerCase()))
+        )
+        .sort((a, b) => {
+            const dateA = a.createdAt?.toDate ? a.createdAt.toDate() : new Date(a.createdAt);
+            const dateB = b.createdAt?.toDate ? b.createdAt.toDate() : new Date(b.createdAt);
+            return dateB - dateA;
+        });
 
     let suggestions = [];
     if (filteredCourses.length === 0 && search.trim() !== "") {
         suggestions = courses.filter(
             (course) =>
-                levenshtein(course.title.toLowerCase(), search.toLowerCase()) <= 3
+                levenshtein(course.title.toLowerCase(), search.toLowerCase()) <= 3 ||
+                levenshtein(course.description.toLowerCase(), search.toLowerCase()) <= 3
         );
     }
 
@@ -74,57 +69,53 @@ function Courses() {
         const today = new Date();
         const yesterday = new Date();
         yesterday.setDate(today.getDate() - 1);
-
         if (
             courseDate.getDate() === today.getDate() &&
             courseDate.getMonth() === today.getMonth() &&
             courseDate.getFullYear() === today.getFullYear()
-        )
-            return "Today";
-
+        ) return "Today";
         if (
             courseDate.getDate() === yesterday.getDate() &&
             courseDate.getMonth() === yesterday.getMonth() &&
             courseDate.getFullYear() === yesterday.getFullYear()
-        )
-            return "Yesterday";
-
+        ) return "Yesterday";
         return courseDate.toLocaleDateString();
     };
 
-    // Inject Top Banner Ad
+    // ---------------------- Ads Scripts ----------------------
     useEffect(() => {
-        const container = document.getElementById("top-banner-ad");
-        if (!container) return;
-        container.innerHTML = "";
+        // Top Banner
+        const topBannerContainer = document.getElementById("top-banner-ad");
+        if (topBannerContainer) {
+            topBannerContainer.innerHTML = "";
+            const script1 = document.createElement("script");
+            script1.innerHTML = `
+                var atOptions = {
+                    'key' : '717b13bb1e5878f471b01b30a7ef293d',
+                    'format' : 'iframe',
+                    'height' : 250,
+                    'width' : 300,
+                    'params' : {}
+                };
+            `;
+            document.body.appendChild(script1);
 
-        const script = document.createElement("script");
-        script.innerHTML = `
-      atOptions = {
-        'key' : '717b13bb1e5878f471b01b30a7ef293d',
-        'format' : 'iframe',
-        'height' : 250,
-        'width' : 300,
-        'params' : {}
-      };
-    `;
-        container.appendChild(script);
+            const script2 = document.createElement("script");
+            script2.src = "//www.highperformanceformat.com/717b13bb1e5878f471b01b30a7ef293d/invoke.js";
+            script2.async = true;
+            topBannerContainer.appendChild(script2);
+        }
 
-        const externalScript = document.createElement("script");
-        externalScript.src =
-            "//www.highperformanceformat.com/717b13bb1e5878f471b01b30a7ef293d/invoke.js";
-        container.appendChild(externalScript);
-    }, []);
-
-    // Inject Social Bar
-    useEffect(() => {
+        // Social Bar
         const socialContainer = document.getElementById("social-bar");
-        if (!socialContainer) return;
-        const socialScript = document.createElement("script");
-        socialScript.src =
-            "//pl27485813.profitableratecpm.com/fa/e5/be/fae5beaf948081b360878f46b4841b73.js";
-        socialScript.async = true;
-        socialContainer.appendChild(socialScript);
+        if (socialContainer) {
+            socialContainer.innerHTML = "";
+            const socialScript = document.createElement("script");
+            socialScript.src =
+                "//pl27485813.profitableratecpm.com/fa/e5/be/fae5beaf948081b360878f46b4841b73.js";
+            socialScript.async = true;
+            socialContainer.appendChild(socialScript);
+        }
     }, []);
 
     return (
@@ -135,7 +126,6 @@ function Courses() {
             <div className="flex-1 p-6 max-w-6xl mx-auto w-full">
                 <h2 className="text-2xl font-bold mb-6">Free Courses</h2>
 
-                {/* Category Tabs */}
                 {/* Category Tabs */}
                 <div className="flex flex-wrap gap-3 mb-6 items-center">
                     {visibleCategories.map((cat, index) => (
@@ -159,7 +149,6 @@ function Courses() {
                         </button>
                     )}
                 </div>
-
 
                 {/* Search Bar */}
                 <div className="relative flex items-center mb-6">
@@ -200,9 +189,7 @@ function Courses() {
                                 )}
                                 <h3 className="text-lg font-semibold">{course.title}</h3>
                                 <p className="text-gray-600 text-sm">{course.description}</p>
-                                <p className="text-xs mt-1 text-gray-500 italic">
-                                    {course.category}
-                                </p>
+                                <p className="text-xs mt-1 text-gray-500 italic">{course.category}</p>
 
                                 {/* Buttons */}
                                 <div className="flex gap-2 mt-3">
@@ -252,9 +239,7 @@ function Courses() {
                     </div>
                 ) : (
                     <div className="text-center mt-10 animate-pulse">
-                        <h3 className="text-lg font-semibold text-gray-700">
-                            ❌ No courses found
-                        </h3>
+                        <h3 className="text-lg font-semibold text-gray-700">❌ No courses found</h3>
                         {suggestions.length > 0 && (
                             <div className="mt-4">
                                 <p className="text-gray-600">Did you mean:</p>
