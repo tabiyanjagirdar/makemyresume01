@@ -1,13 +1,20 @@
 import { useState } from "react";
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 
+import { Analytics } from "@vercel/analytics/react"; // ✅ Keep Analytics
+import Services from "./Services"; // ✅ Keep Services
+
 import AboutUs from "./AboutUs";
 import CompanySlider from "./CompanySlider";
 import ResourceCards from "./ResourceCards";
 import HeroSection from "./HeroSection";
-import Courses from "./Courses";        // Public courses page
-import PostCourse from "./PostCourse";  // Admin course posting page
+import Courses from "./Courses"; // Public courses page
+import PostCourse from "./PostCourse"; // Admin course posting page
 import resumebro from "./assets/resumebro.png";
+
+import Jobs from "./pages/Jobs";
+import JobDetails from "./pages/JobDetails";
+import AdminJobs from "./pages/AdminJobs"; // ✅ Admin job posting page
 
 import { FaInstagram, FaWhatsapp, FaEnvelope } from "react-icons/fa";
 
@@ -17,7 +24,6 @@ const App = () => {
   return (
     <Router>
       <div className="min-h-screen flex flex-col scroll-smooth bg-white text-gray-900">
-
         {/* Header */}
         <header className="w-full shadow-lg bg-white relative">
           <div className="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
@@ -87,7 +93,7 @@ const App = () => {
           )}
         </header>
 
-        {/* Free Courses and Job Updates Buttons */}
+        {/* Free Courses, Job Updates & Jobs Buttons */}
         <div className="flex justify-center gap-4 py-3 flex-wrap">
           <Link
             to="/courses"
@@ -103,6 +109,12 @@ const App = () => {
           >
             Job Updates
           </a>
+          <Link
+            to="/jobs"
+            className="bg-purple-600 text-white px-6 py-2 rounded-lg text-lg font-medium hover:bg-purple-700 transition"
+          >
+            Jobs
+          </Link>
         </div>
 
         {/* Main Content */}
@@ -113,9 +125,9 @@ const App = () => {
               element={
                 <>
                   <HeroSection />
-
                   <CompanySlider />
                   <ResourceCards />
+                  <Services /> {/* ✅ Added Services to homepage */}
                   <AboutUs />
                 </>
               }
@@ -123,6 +135,10 @@ const App = () => {
             <Route path="/courses" element={<Courses />} />
             <Route path="/admin" element={<PostCourse />} />
             <Route path="/about" element={<AboutUs />} />
+            <Route path="/jobs" element={<Jobs />} />
+            <Route path="/jobs/:slug" element={<JobDetails />} />
+            <Route path="/adminjobs" element={<AdminJobs />} />{/* ✅ Admin Job Posting */}
+
             <Route
               path="/contact"
               element={
@@ -166,6 +182,9 @@ const App = () => {
             </p>
           </div>
         </footer>
+
+        {/* Analytics */}
+        <Analytics />
       </div>
     </Router>
   );
