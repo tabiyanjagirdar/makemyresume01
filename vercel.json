@@ -1,6 +1,9 @@
 {
   "rewrites": [
     { "source": "/courses", "destination": "/index.html" },
+    { "source": "/jobs", "destination": "/index.html" },
+    { "source": "/jobs/:id", "destination": "/index.html" },
+    { "source": "/adminjobs", "destination": "/index.html" },
     { "source": "/(.*)", "destination": "/index.html" }
   ]
 }
