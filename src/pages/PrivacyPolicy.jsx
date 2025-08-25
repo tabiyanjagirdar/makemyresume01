@@ -6,25 +6,42 @@ export default function PrivacyPolicy() {
     return (
         <div className="max-w-3xl mx-auto px-4 py-10 prose prose-gray">
             <h1>Privacy Policy</h1>
-            <p><em>Last updated: {new Date().toLocaleDateString()}</em></p>
+            <p>
+                <em>Last updated: {new Date().toLocaleDateString()}</em>
+            </p>
 
             <p>
                 This Privacy Policy describes how <strong>makemyresume.help</strong> (“we”, “us”, or “our”)
-                collects, uses, and shares information when you visit or use our website
-                <a href="https://makemyresume.help" target="_blank" rel="noreferrer"> https://makemyresume.help</a>.
+                collects, uses, and shares information when you visit or use our website:{" "}
+                <a href="https://makemyresume.help" target="_blank" rel="noreferrer">
+                    https://makemyresume.help
+                </a>.
             </p>
 
             <h2>Who we are</h2>
             <p>
-                Website: <a href="https://makemyresume.help" target="_blank" rel="noreferrer">makemyresume.help</a><br />
-                Contact: <a href="mailto:studybrokud@gmail.com">studybrokud@gmail.com</a>
+                Website:{" "}
+                <a href="https://makemyresume.help" target="_blank" rel="noreferrer">
+                    makemyresume.help
+                </a>
+                <br />
+                Contact:{" "}
+                <a href="mailto:studybrokud@gmail.com">studybrokud@gmail.com</a>
             </p>
 
             <h2>Information we collect</h2>
             <ul>
-                <li><strong>Usage data:</strong> IP address, browser type, device info, pages visited, and timestamps.</li>
-                <li><strong>Content & forms you submit:</strong> e.g., job applications or contact messages.</li>
-                <li><strong>Cookies & similar tech:</strong> to keep the site functional, analyze usage, and show ads.</li>
+                <li>
+                    <strong>Usage data:</strong> IP address, browser type, device info, pages visited, and
+                    timestamps.
+                </li>
+                <li>
+                    <strong>Content & forms you submit:</strong> e.g., job applications or contact messages.
+                </li>
+                <li>
+                    <strong>Cookies & similar technologies:</strong> used to keep the site functional, analyze
+                    usage, and display ads.
+                </li>
             </ul>
 
             <h2>How we use information</h2>
@@ -38,9 +55,9 @@ export default function PrivacyPolicy() {
 
             <h2>Cookies & Advertising</h2>
             <p>
-                We use cookies and similar technologies to operate our site and to help
-                deliver, measure, and personalize ads. You can control cookies through
-                your browser settings. Disabling some cookies may affect site functionality.
+                We use cookies and similar technologies to operate our site and to help deliver, measure,
+                and personalize ads. You can control cookies through your browser settings. Disabling some
+                cookies may affect site functionality.
             </p>
 
             <h3>Ezoic</h3>
@@ -48,24 +65,50 @@ export default function PrivacyPolicy() {
                 We use <strong>Ezoic</strong> to provide advertising and related services on this site.
                 Ezoic may use cookies and collect certain data (such as IP address, device and browser info,
                 ad interactions) to serve personalized or non-personalized ads and to measure performance.
-                For details, see Ezoic’s privacy policy:
-                <br />
-                <a href="https://www.ezoic.com/privacy-policy/" target="_blank" rel="noreferrer">
-                    https://www.ezoic.com/privacy-policy/
+            </p>
+            <p>
+                Ezoic’s required disclosures and partner list can be found here:{" "}
+                <a
+                    href="http://g.ezoic.net/privacy/makemyresume.help"
+                    target="_blank"
+                    rel="noreferrer"
+                >
+                    http://g.ezoic.net/privacy/makemyresume.help
                 </a>
             </p>
+            <span id="ezoic-privacy-policy-embed"></span>
 
             <h2>Your choices</h2>
             <ul>
                 <li>
-                    <strong>Cookie controls:</strong> Manage cookies in your browser settings. If you use
-                    an ad-blocking or privacy extension, it may also provide additional controls.
+                    <strong>Cookie controls:</strong> Manage cookies in your browser settings. If you use an
+                    ad-blocking or privacy extension, it may also provide additional controls.
                 </li>
                 <li>
-                    <strong>Interest-based advertising opt-outs:</strong><br />
-                    NAI: <a href="https://optout.networkadvertising.org/" target="_blank" rel="noreferrer">optout.networkadvertising.org</a><br />
-                    YourAdChoices: <a href="https://youradchoices.com/" target="_blank" rel="noreferrer">youradchoices.com</a><br />
-                    Your Online Choices (EU): <a href="https://www.youronlinechoices.eu/" target="_blank" rel="noreferrer">youronlinechoices.eu</a>
+                    <strong>Interest-based advertising opt-outs:</strong>
+                    <br />
+                    NAI:{" "}
+                    <a
+                        href="https://optout.networkadvertising.org/"
+                        target="_blank"
+                        rel="noreferrer"
+                    >
+                        optout.networkadvertising.org
+                    </a>
+                    <br />
+                    YourAdChoices:{" "}
+                    <a href="https://youradchoices.com/" target="_blank" rel="noreferrer">
+                        youradchoices.com
+                    </a>
+                    <br />
+                    Your Online Choices (EU):{" "}
+                    <a
+                        href="https://www.youronlinechoices.eu/"
+                        target="_blank"
+                        rel="noreferrer"
+                    >
+                        youronlinechoices.eu
+                    </a>
                 </li>
             </ul>
 
@@ -77,20 +120,20 @@ export default function PrivacyPolicy() {
 
             <h2>Children’s privacy</h2>
             <p>
-                Our site is not directed to children under the age of 13 (or 16 where applicable).
-                We do not knowingly collect personal information from children.
+                Our site is not directed to children under the age of 13 (or 16 where applicable). We do not
+                knowingly collect personal information from children.
             </p>
 
             <h2>International transfers</h2>
             <p>
-                Your information may be processed in countries other than your own. We take steps
-                to ensure appropriate safeguards are in place.
+                Your information may be processed in countries other than your own. We take steps to ensure
+                appropriate safeguards are in place.
             </p>
 
             <h2>Your rights</h2>
             <p>
-                Depending on your location, you may have rights to access, correct, delete, or restrict
-                the use of your personal information. To exercise these rights, contact us at{" "}
+                Depending on your location, you may have rights to access, correct, delete, or restrict the
+                use of your personal information. To exercise these rights, contact us at{" "}
                 <a href="mailto:studybrokud@gmail.com">studybrokud@gmail.com</a>.
             </p>
 
@@ -103,12 +146,12 @@ export default function PrivacyPolicy() {
             <h2>Contact us</h2>
             <p>
                 If you have questions about this Privacy Policy, please contact us at{" "}
-                <a href="mailto:studybrokud@gmail.com">studybrokud@gmail.com</a>
+                <a href="mailto:studybrokud@gmail.com">studybrokud@gmail.com</a>.
             </p>
 
-            <p>
+            <a className="text-sm text-gray-600 hover:underline" href="/">
                 <Link to="/">← Back to Home</Link>
-            </p>
+            </a>
         </div>
     );
 }
