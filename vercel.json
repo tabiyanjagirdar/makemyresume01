@@ -2,7 +2,8 @@
    "rewrites": [
     {
       "source": "/ads.txt",
-      "destination": "https://srv.adstxtmanager.com/19390/makemyresume.help"
+      "destination": "https://srv.adstxtmanager.com/19390/makemyresume.help",
+      "permanent": true
     },
     { "source": "/courses", "destination": "/index.html" },
     { "source": "/jobs", "destination": "/index.html" },
