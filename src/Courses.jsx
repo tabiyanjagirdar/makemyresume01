@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { db } from "./firebase";
 import { collection, getDocs } from "firebase/firestore";
+import EzoicAd from "./components/EzoicAd";
+import EzoicShowAds from "./components/EzoicShowAds";
 
 // Levenshtein distance for fuzzy search
 function levenshtein(a, b) {
@@ -23,31 +25,40 @@ function Courses() {
     const [category, setCategory] = useState("All");
     const [showAllCategories, setShowAllCategories] = useState(false);
 
+    const ezoicPlacementIds = [101, 102, 103];
+
     // Fetch courses
     useEffect(() => {
         const fetchCourses = async () => {
-            const querySnapshot = await getDocs(collection(db, "courses"));
-            const allCourses = querySnapshot.docs
-                .map((doc) => ({ id: doc.id, ...doc.data() }))
+            const snapshot = await getDocs(collection(db, "courses"));
+            const allCourses = snapshot.docs
+                .map(doc => ({ id: doc.id, ...doc.data() }))
                 .sort((a, b) => {
                     const dateA = a.createdAt?.toDate ? a.createdAt.toDate() : new Date(a.createdAt);
                     const dateB = b.createdAt?.toDate ? b.createdAt.toDate() : new Date(b.createdAt);
                     return dateB - dateA;
                 });
             setCourses(allCourses);
+
+            // Initial Ezoic ad load
+            window.ezstandalone?.cmd?.push(() => window.ezstandalone.showAds(...ezoicPlacementIds));
         };
         fetchCourses();
     }, []);
 
-    const categories = ["All", ...new Set(courses.map((c) => c.category))];
+    // Refresh Ezoic ads on category/search change
+    useEffect(() => {
+        window.ezstandalone?.cmd?.push(() => window.ezstandalone.showAds(...ezoicPlacementIds));
+    }, [category, search]);
+
+    const categories = ["All", ...new Set(courses.map(c => c.category))];
     const visibleCategories = showAllCategories ? categories : categories.slice(0, 5);
 
     const filteredCourses = courses
-        .filter(
-            (course) =>
-                (category === "All" || course.category === category) &&
-                (course.title.toLowerCase().includes(search.toLowerCase()) ||
-                    course.description.toLowerCase().includes(search.toLowerCase()))
+        .filter(course =>
+            (category === "All" || course.category === category) &&
+            (course.title.toLowerCase().includes(search.toLowerCase()) ||
+                course.description.toLowerCase().includes(search.toLowerCase()))
         )
         .sort((a, b) => {
             const dateA = a.createdAt?.toDate ? a.createdAt.toDate() : new Date(a.createdAt);
@@ -58,79 +69,35 @@ function Courses() {
     let suggestions = [];
     if (filteredCourses.length === 0 && search.trim() !== "") {
         suggestions = courses.filter(
-            (course) =>
+            course =>
                 levenshtein(course.title.toLowerCase(), search.toLowerCase()) <= 3 ||
                 levenshtein(course.description.toLowerCase(), search.toLowerCase()) <= 3
         );
     }
 
-    const getDateLabel = (date) => {
+    const getDateLabel = date => {
         const courseDate = date.toDate ? date.toDate() : new Date(date);
         const today = new Date();
         const yesterday = new Date();
         yesterday.setDate(today.getDate() - 1);
-        if (
-            courseDate.getDate() === today.getDate() &&
-            courseDate.getMonth() === today.getMonth() &&
-            courseDate.getFullYear() === today.getFullYear()
-        ) return "Today";
-        if (
-            courseDate.getDate() === yesterday.getDate() &&
-            courseDate.getMonth() === yesterday.getMonth() &&
-            courseDate.getFullYear() === yesterday.getFullYear()
-        ) return "Yesterday";
+        if (courseDate.toDateString() === today.toDateString()) return "Today";
+        if (courseDate.toDateString() === yesterday.toDateString()) return "Yesterday";
         return courseDate.toLocaleDateString();
     };
 
-    // ---------------------- Ads Scripts ----------------------
-    useEffect(() => {
-        // Top Banner
-        const topBannerContainer = document.getElementById("top-banner-ad");
-        if (topBannerContainer) {
-            topBannerContainer.innerHTML = "";
-            const script1 = document.createElement("script");
-            script1.innerHTML = `
-                var atOptions = {
-                    'key' : '717b13bb1e5878f471b01b30a7ef293d',
-                    'format' : 'iframe',
-                    'height' : 250,
-                    'width' : 300,
-                    'params' : {}
-                };
-            `;
-            document.body.appendChild(script1);
-
-            const script2 = document.createElement("script");
-            script2.src = "//www.highperformanceformat.com/717b13bb1e5878f471b01b30a7ef293d/invoke.js";
-            script2.async = true;
-            topBannerContainer.appendChild(script2);
-        }
-
-        // Social Bar
-        const socialContainer = document.getElementById("social-bar");
-        if (socialContainer) {
-            socialContainer.innerHTML = "";
-            const socialScript = document.createElement("script");
-            socialScript.src =
-                "//pl27485813.profitableratecpm.com/fa/e5/be/fae5beaf948081b360878f46b4841b73.js";
-            socialScript.async = true;
-            socialContainer.appendChild(socialScript);
-        }
-    }, []);
-
     return (
         <div className="flex flex-col min-h-screen bg-gray-50">
-            {/* Top Banner Ad */}
-            <div id="top-banner-ad" className="w-full flex justify-center my-4"></div>
+            <div className="w-full flex justify-center my-4">
+                <EzoicAd id={101} />
+            </div>
 
             <div className="flex-1 p-6 max-w-6xl mx-auto w-full">
                 <h2 className="text-2xl font-bold mb-6">Free Courses</h2>
 
-                {/* Category Tabs */}
                 <div className="flex flex-wrap gap-3 mb-6 items-center">
-                    {visibleCategories.map((cat, index) => (
+                    {visibleCategories.map((cat, idx) => (
                         <button
-                            key={index}
+                            key={idx}
                             onClick={() => setCategory(cat)}
                             className={`px-4 py-2 border text-sm font-medium transition ${category === cat
                                 ? "bg-blue-600 text-white border-blue-600"
@@ -150,13 +117,12 @@ function Courses() {
                     )}
                 </div>
 
-                {/* Search Bar */}
                 <div className="relative flex items-center mb-6">
                     <input
                         type="text"
                         placeholder="Search courses..."
                         value={search}
-                        onChange={(e) => setSearch(e.target.value)}
+                        onChange={e => setSearch(e.target.value)}
                         className="border p-2 pl-10 w-full rounded shadow-sm focus:outline-none"
                     />
                     <button
@@ -167,72 +133,27 @@ function Courses() {
                     </button>
                 </div>
 
-                {/* Courses Grid */}
                 {filteredCourses.length > 0 ? (
                     <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                        {filteredCourses.map((course) => (
-                            <div
-                                key={course.id}
-                                className="p-4 border rounded-lg shadow hover:shadow-xl transition relative bg-white"
-                            >
-                                {/* Date badge */}
+                        {filteredCourses.map(course => (
+                            <div key={course.id} className="p-4 border rounded-lg shadow hover:shadow-xl transition relative bg-white">
                                 <div className="absolute top-2 left-1/2 -translate-x-1/2 bg-red-500 text-white px-3 py-1 rounded-full text-xs font-bold">
                                     {getDateLabel(course.createdAt)}
                                 </div>
 
-                                {course.imageUrl && (
-                                    <img
-                                        src={course.imageUrl}
-                                        alt={course.title}
-                                        className="w-full h-40 object-cover rounded mb-3"
-                                    />
-                                )}
+                                {course.imageUrl && <img src={course.imageUrl} alt={course.title} className="w-full h-40 object-cover rounded mb-3" />}
                                 <h3 className="text-lg font-semibold">{course.title}</h3>
                                 <p className="text-gray-600 text-sm">{course.description}</p>
                                 <p className="text-xs mt-1 text-gray-500 italic">{course.category}</p>
 
-                                {/* Buttons */}
                                 <div className="flex gap-2 mt-3">
-                                    <a
-                                        href={course.link}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className="flex-1 text-center bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-700 transition"
-                                    >
+                                    <a href={course.link} target="_blank" rel="noopener noreferrer" className="flex-1 text-center bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-700 transition">
                                         Enroll Now
-                                    </a>
-                                    <a
-                                        href="https://www.profitableratecpm.com/hpppsb5n7r?key=9dfa5af7ea37a41696d231fc108bdbed"
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className="flex-1 text-center bg-green-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-green-700 transition"
-                                    >
-                                        Sponsor
                                     </a>
                                 </div>
 
-                                {/* Inline Banner Ad */}
                                 <div className="w-full flex justify-center my-4">
-                                    <div className="w-full max-w-sm flex justify-center">
-                                        <script
-                                            type="text/javascript"
-                                            dangerouslySetInnerHTML={{
-                                                __html: `
-                          atOptions = {
-                            'key' : 'cb0a8735930d31fbf1dcbf5f5a089bed',
-                            'format' : 'iframe',
-                            'height' : 50,
-                            'width' : 320,
-                            'params' : {}
-                          };
-                        `
-                                            }}
-                                        />
-                                        <script
-                                            type="text/javascript"
-                                            src="//www.highperformanceformat.com/cb0a8735930d31fbf1dcbf5f5a089bed/invoke.js"
-                                        ></script>
-                                    </div>
+                                    <EzoicAd id={102} />
                                 </div>
                             </div>
                         ))}
@@ -244,12 +165,8 @@ function Courses() {
                             <div className="mt-4">
                                 <p className="text-gray-600">Did you mean:</p>
                                 <div className="flex flex-wrap justify-center gap-3 mt-3">
-                                    {suggestions.map((s) => (
-                                        <span
-                                            key={s.id}
-                                            onClick={() => setSearch(s.title)}
-                                            className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full cursor-pointer hover:bg-blue-200"
-                                        >
+                                    {suggestions.map(s => (
+                                        <span key={s.id} onClick={() => setSearch(s.title)} className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full cursor-pointer hover:bg-blue-200">
                                             {s.title}
                                         </span>
                                     ))}
@@ -260,18 +177,11 @@ function Courses() {
                 )}
             </div>
 
-            {/* Social Bar */}
-            <div id="social-bar" className="w-full flex justify-center mt-4 mb-2"></div>
-
-            {/* Bottom Banner Ad */}
-            <div className="w-full flex justify-center mt-2 mb-4">
-                <script
-                    async
-                    data-cfasync="false"
-                    src="//pl27485819.profitableratecpm.com/eb5de8b2878b13d29759ac560b672011/invoke.js"
-                ></script>
-                <div id="container-eb5de8b2878b13d29759ac560b672011"></div>
+            <div className="w-full flex justify-center mt-4 mb-4">
+                <EzoicAd id={103} />
             </div>
+
+            <EzoicShowAds ids={ezoicPlacementIds} />
         </div>
     );
 }

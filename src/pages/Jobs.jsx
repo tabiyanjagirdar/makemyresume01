@@ -1,43 +1,18 @@
-// src/pages/Jobs.jsx
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { db } from "../firebase";
 import { collection, getDocs } from "firebase/firestore";
 
-const SPONSOR_LINK =
-    "https://www.profitableratecpm.com/hpppsb5n7r?key=9dfa5af7ea37a41696d231fc108bdbed";
-
-// Helper to inject inline ads
-function injectInlineAd(containerId, key = "cb0a8735930d31fbf1dcbf5f5a089bed") {
-    const container = document.getElementById(containerId);
-    if (!container || container.dataset.injected === "1") return;
-    container.dataset.injected = "1";
-
-    const scriptInline = document.createElement("script");
-    scriptInline.type = "text/javascript";
-    scriptInline.innerHTML = `
-    atOptions = {
-      'key' : '${key}',
-      'format' : 'iframe',
-      'height' : 50,
-      'width' : 320,
-      'params' : {}
-    };
-  `;
-
-    const scriptExternal = document.createElement("script");
-    scriptExternal.src = `//www.highperformanceformat.com/${key}/invoke.js`;
-    scriptExternal.async = true;
-
-    container.appendChild(scriptInline);
-    container.appendChild(scriptExternal);
-}
+import EzoicAd from "../components/EzoicAd";
+import EzoicShowAds from "../components/EzoicShowAds";
 
 export default function Jobs() {
     const [jobs, setJobs] = useState([]);
     const [search, setSearch] = useState("");
     const [category, setCategory] = useState("All");
     const categories = ["All", "IT", "Non-IT", "Govt"];
+
+    const pagePlacementIds = [201, 202, 203, 204];
 
     // Fetch jobs from Firestore
     useEffect(() => {
@@ -51,93 +26,18 @@ export default function Jobs() {
                     return B - A;
                 });
             setJobs(list);
+
+            // Initial Ezoic ad load
+            window.ezstandalone?.cmd?.push(() => window.ezstandalone.showAds(...pagePlacementIds));
         };
         fetchJobs();
     }, []);
 
-    // Inject ads dynamically
+    // Refresh Ezoic ads whenever search/category changes
     useEffect(() => {
-        // Top banner ad
-        const topAdContainer = document.getElementById("top-banner-ad");
-        if (topAdContainer && !document.getElementById("top-banner-ad-script")) {
-            const scriptInline = document.createElement("script");
-            scriptInline.type = "text/javascript";
-            scriptInline.innerHTML = `
-        atOptions = {
-          'key' : '717b13bb1e5878f471b01b30a7ef293d',
-          'format' : 'iframe',
-          'height' : 250,
-          'width' : 300,
-          'params' : {}
-        };
-      `;
+        window.ezstandalone?.cmd?.push(() => window.ezstandalone.showAds(...pagePlacementIds));
+    }, [category, search]);
 
-            const scriptExternal = document.createElement("script");
-            scriptExternal.src =
-                "//www.highperformanceformat.com/717b13bb1e5878f471b01b30a7ef293d/invoke.js";
-            scriptExternal.async = true;
-            scriptExternal.id = "top-banner-ad-script";
-
-            topAdContainer.appendChild(scriptInline);
-            topAdContainer.appendChild(scriptExternal);
-        }
-
-        // Inline ads in grid
-        const ids = Array.from(document.querySelectorAll("[data-inline-ad-id]")).map(
-            (el) => el.getAttribute("data-inline-ad-id")
-        );
-        ids.forEach((id) => injectInlineAd(id));
-
-        // Sticky mobile inline ad
-        const stickyContainer = document.getElementById("sticky-inline-ad-bottom");
-        if (stickyContainer && !stickyContainer.dataset.injected) {
-            stickyContainer.dataset.injected = "1";
-            const scriptInline = document.createElement("script");
-            scriptInline.type = "text/javascript";
-            scriptInline.innerHTML = `
-        atOptions = {
-          'key' : 'cb0a8735930d31fbf1dcbf5f5a089bed',
-          'format' : 'iframe',
-          'height' : 50,
-          'width' : 320,
-          'params' : {}
-        };
-      `;
-            const scriptExternal = document.createElement("script");
-            scriptExternal.src =
-                "//www.highperformanceformat.com/cb0a8735930d31fbf1dcbf5f5a089bed/invoke.js";
-            scriptExternal.async = true;
-            stickyContainer.appendChild(scriptInline);
-            stickyContainer.appendChild(scriptExternal);
-        }
-
-        // Native banner at bottom
-        const nativeContainer = document.getElementById(
-            "container-eb5de8b2878b13d29759ac560b672011"
-        );
-        if (nativeContainer && !document.getElementById("native-banner-ad-script")) {
-            const script = document.createElement("script");
-            script.async = true;
-            script.src =
-                "//pl27485819.profitableratecpm.com/eb5de8b2878b13d29759ac560b672011/invoke.js";
-            script.id = "native-banner-ad-script";
-            nativeContainer.appendChild(script);
-        }
-
-        // Social bar ad
-        const socialBarContainer = document.getElementById("social-bar");
-        if (socialBarContainer && !document.getElementById("social-bar-ad")) {
-            const script = document.createElement("script");
-            script.type = "text/javascript";
-            script.src =
-                "//pl27485813.profitableratecpm.com/fa/e5/be/fae5beaf948081b360878f46b4841b73.js";
-            script.id = "social-bar-ad";
-            script.async = true;
-            socialBarContainer.appendChild(script);
-        }
-    }, [jobs, search, category]);
-
-    // Filter jobs
     const filtered = jobs.filter((j) => {
         const matchesCategory = category === "All" || j.category === category;
         const q = search.trim().toLowerCase();
@@ -151,8 +51,9 @@ export default function Jobs() {
 
     return (
         <div className="min-h-screen bg-gray-50 p-6 relative">
-            {/* Top banner ad */}
-            <div id="top-banner-ad" className="w-full flex justify-center mb-6"></div>
+            <div className="w-full flex justify-center mb-6">
+                <EzoicAd id={201} />
+            </div>
 
             <div className="max-w-6xl mx-auto">
                 <h2 className="text-2xl font-bold mb-4">Open Jobs</h2>
@@ -162,7 +63,9 @@ export default function Jobs() {
                         <button
                             key={c}
                             onClick={() => setCategory(c)}
-                            className={`px-4 py-2 border rounded text-sm ${category === c ? "bg-blue-600 text-white" : "bg-white text-gray-700"
+                            className={`px-4 py-2 border rounded text-sm ${category === c
+                                ? "bg-blue-600 text-white"
+                                : "bg-white text-gray-700"
                                 }`}
                         >
                             {c}
@@ -201,7 +104,9 @@ export default function Jobs() {
                                         <p className="text-xs text-gray-500 mt-1">
                                             {job.location} • {job.category}
                                         </p>
-                                        <p className="text-sm mt-2 text-gray-700 line-clamp-3">{job.description}</p>
+                                        <p className="text-sm mt-2 text-gray-700 line-clamp-3">
+                                            {job.description}
+                                        </p>
                                     </div>
                                 </div>
 
@@ -212,22 +117,12 @@ export default function Jobs() {
                                     >
                                         View Details
                                     </Link>
-                                    <a
-                                        href={SPONSOR_LINK}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className="px-3 py-2 bg-green-600 text-white rounded hover:bg-green-700"
-                                    >
-                                        Sponsor
-                                    </a>
                                 </div>
 
                                 {(idx + 1) % 3 === 0 && (
-                                    <div
-                                        className="col-span-full flex justify-center my-2"
-                                        data-inline-ad-id={`inline-ad-${job.id}`}
-                                        id={`inline-ad-${job.id}`}
-                                    />
+                                    <div className="col-span-full flex justify-center my-2">
+                                        <EzoicAd id={202} />
+                                    </div>
                                 )}
                             </div>
                         </React.Fragment>
@@ -239,20 +134,15 @@ export default function Jobs() {
                 )}
             </div>
 
-            {/* Social bar */}
-            <div id="social-bar" className="w-full flex justify-center mt-6"></div>
+            <div className="w-full flex justify-center mt-6">
+                <EzoicAd id={203} />
+            </div>
 
-            {/* Sticky mobile inline ad */}
-            <div
-                id="sticky-inline-ad-bottom"
-                className="sm:hidden fixed bottom-0 left-0 w-full flex justify-center bg-white shadow-lg z-50"
-            ></div>
+            <div className="w-full flex justify-center mt-6">
+                <EzoicAd id={204} />
+            </div>
 
-            {/* Native banner at bottom */}
-            <div
-                id="container-eb5de8b2878b13d29759ac560b672011"
-                className="w-full flex justify-center mt-6"
-            ></div>
+            <EzoicShowAds ids={pagePlacementIds} />
         </div>
     );
 }
