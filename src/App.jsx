@@ -15,7 +15,7 @@ import resumebro from "./assets/resumebro.png";
 import Jobs from "./pages/Jobs";
 import JobDetails from "./pages/JobDetails";
 import AdminJobs from "./pages/AdminJobs"; // ✅ Admin job posting page
-
+import PrivacyPolicy from "./pages/PrivacyPolicy";
 import { FaInstagram, FaWhatsapp, FaEnvelope } from "react-icons/fa";
 
 const App = () => {
@@ -138,7 +138,7 @@ const App = () => {
             <Route path="/jobs" element={<Jobs />} />
             <Route path="/jobs/:slug" element={<JobDetails />} />
             <Route path="/adminjobs" element={<AdminJobs />} />{/* ✅ Admin Job Posting */}
-
+            <Route path="/privacy-policy" element={<PrivacyPolicy />} /> {/* ← add this */}
             <Route
               path="/contact"
               element={
@@ -177,9 +177,13 @@ const App = () => {
         {/* Footer */}
         <footer className="w-full bg-black text-white py-6">
           <div className="max-w-7xl mx-auto px-4 text-center">
+            <a href="/privacy-policy" className="text-sm text-gray-600 hover:underline">
+              Privacy Policy
+            </a>
             <p className="text-sm">
               © {new Date().getFullYear()} MakeMyResume. All rights reserved.
             </p>
+
           </div>
         </footer>
 
