@@ -3,6 +3,7 @@ import { db } from "./firebase";
 import { collection, getDocs } from "firebase/firestore";
 import EzoicAd from "./components/EzoicAd";
 import EzoicShowAds from "./components/EzoicShowAds";
+import { Helmet } from "react-helmet";
 
 // Levenshtein distance for fuzzy search
 function levenshtein(a, b) {
@@ -87,6 +88,31 @@ function Courses() {
 
     return (
         <div className="flex flex-col min-h-screen bg-gray-50">
+            <Helmet>
+                <title>Free Courses - makemyresume.help</title>
+                <meta name="description" content="Explore free courses on makemyresume.help. Learn, enroll, and upgrade your skills with our curated courses." />
+                <meta property="og:title" content="Free Courses - makemyresume.help" />
+                <meta property="og:description" content="Explore free courses on makemyresume.help. Learn, enroll, and upgrade your skills with our curated courses." />
+                <meta property="og:type" content="website" />
+                <meta property="og:url" content="https://makemyresume.help/courses" />
+                <meta property="og:image" content="https://makemyresume.help/logo.png" />
+                <meta name="twitter:card" content="summary_large_image" />
+                <script type="application/ld+json">
+                    {JSON.stringify({
+                        "@context": "https://schema.org",
+                        "@type": "ItemList",
+                        "name": "Free Courses",
+                        "itemListElement": filteredCourses.map((course, idx) => ({
+                            "@type": "Course",
+                            "position": idx + 1,
+                            "name": course.title,
+                            "description": course.description,
+                            "url": course.link
+                        }))
+                    })}
+                </script>
+            </Helmet>
+
             <div className="w-full flex justify-center my-4">
                 <EzoicAd id={101} />
             </div>
@@ -179,6 +205,13 @@ function Courses() {
 
             <div className="w-full flex justify-center mt-4 mb-4">
                 <EzoicAd id={103} />
+            </div>
+
+            {/* WhatsApp Join Button */}
+            <div className="w-full flex justify-center mt-6 mb-6">
+                <a href="https://chat.whatsapp.com/GwPmoYzo5Qh7OUitJjGX4g" target="_blank" rel="noopener noreferrer" className="px-6 py-3 bg-green-500 text-white rounded-lg font-semibold hover:bg-green-600 transition">
+                    Join WhatsApp Group for Course Notifications
+                </a>
             </div>
 
             <EzoicShowAds ids={ezoicPlacementIds} />
