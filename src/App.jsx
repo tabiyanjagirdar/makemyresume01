@@ -27,11 +27,14 @@ const App = () => {
         {/* Header */}
         <header className="w-full shadow-lg bg-white relative">
           <div className="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
-            <img
-              src={resumebro}
-              alt="Make My Resume Logo"
-              className="h-12 md:h-16 w-auto object-contain"
-            />
+            <Link to="/">
+              <img
+
+                src={resumebro}
+                alt="Make My Resume Logo"
+                className="h-12 md:h-16 w-auto object-contain"
+              />
+            </Link>
 
             {/* Desktop Menu */}
             <nav className="hidden md:flex space-x-4 items-center">
