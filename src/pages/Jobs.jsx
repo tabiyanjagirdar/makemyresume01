@@ -1,8 +1,9 @@
+// src/pages/Jobs.jsx
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { db } from "../firebase";
 import { collection, getDocs } from "firebase/firestore";
-
+import { Helmet } from "react-helmet";
 import EzoicAd from "../components/EzoicAd";
 import EzoicShowAds from "../components/EzoicShowAds";
 
@@ -14,7 +15,6 @@ export default function Jobs() {
 
     const pagePlacementIds = [201, 202, 203, 204];
 
-    // Fetch jobs from Firestore
     useEffect(() => {
         const fetchJobs = async () => {
             const snap = await getDocs(collection(db, "jobs"));
@@ -26,17 +26,9 @@ export default function Jobs() {
                     return B - A;
                 });
             setJobs(list);
-
-            // Initial Ezoic ad load
-            window.ezstandalone?.cmd?.push(() => window.ezstandalone.showAds(...pagePlacementIds));
         };
         fetchJobs();
     }, []);
-
-    // Refresh Ezoic ads whenever search/category changes
-    useEffect(() => {
-        window.ezstandalone?.cmd?.push(() => window.ezstandalone.showAds(...pagePlacementIds));
-    }, [category, search]);
 
     const filtered = jobs.filter((j) => {
         const matchesCategory = category === "All" || j.category === category;
@@ -51,6 +43,14 @@ export default function Jobs() {
 
     return (
         <div className="min-h-screen bg-gray-50 p-6 relative">
+            <Helmet>
+                <title>Open Jobs | MakeMyResume</title>
+                <meta
+                    name="description"
+                    content="Browse latest IT, Non-IT, and Govt jobs. Find company details, job roles, locations, and apply online."
+                />
+            </Helmet>
+
             <div className="w-full flex justify-center mb-6">
                 <EzoicAd id={201} />
             </div>
@@ -63,9 +63,7 @@ export default function Jobs() {
                         <button
                             key={c}
                             onClick={() => setCategory(c)}
-                            className={`px-4 py-2 border rounded text-sm ${category === c
-                                ? "bg-blue-600 text-white"
-                                : "bg-white text-gray-700"
+                            className={`px-4 py-2 border rounded text-sm ${category === c ? "bg-blue-600 text-white" : "bg-white text-gray-700"
                                 }`}
                         >
                             {c}
@@ -91,7 +89,7 @@ export default function Jobs() {
                                         {job.imageUrl ? (
                                             <img
                                                 src={job.imageUrl}
-                                                alt={job.company}
+                                                alt={`${job.role} at ${job.company}`}
                                                 className="object-contain w-full h-full"
                                             />
                                         ) : (
@@ -140,6 +138,17 @@ export default function Jobs() {
 
             <div className="w-full flex justify-center mt-6">
                 <EzoicAd id={204} />
+            </div>
+
+            <div className="max-w-6xl mx-auto mt-10 text-center">
+                <a
+                    href="https://chat.whatsapp.com/GwPmoYzo5Qh7OUitJjGX4g"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="px-6 py-3 bg-green-600 text-white rounded hover:bg-green-700 transition-all"
+                >
+                    Join WhatsApp Group for Job Notifications
+                </a>
             </div>
 
             <EzoicShowAds ids={pagePlacementIds} />
