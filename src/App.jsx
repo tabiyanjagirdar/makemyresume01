@@ -2,7 +2,7 @@ import { useState } from "react";
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 
 import { Analytics } from "@vercel/analytics/react"; // ✅ Keep Analytics
-import Services from "./Services"; // ✅ Keep Services
+// import Services from "./Services"; // ✅ Keep Services
 
 import AboutUs from "./AboutUs";
 import CompanySlider from "./CompanySlider";
@@ -130,7 +130,7 @@ const App = () => {
                   <HeroSection />
                   <CompanySlider />
                   <ResourceCards />
-                  <Services /> {/* ✅ Added Services to homepage */}
+                  {/* <Services /> ✅ Added Services to homepage */}
                   <AboutUs />
                 </>
               }
