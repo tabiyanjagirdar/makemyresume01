@@ -127,7 +127,7 @@ export default function JobDetails() {
                         rel="noopener noreferrer"
                         className="px-6 py-3 bg-green-600 text-white rounded hover:bg-green-700 transition-all"
                     >
-                        Join WhatsApp Group for Job Notifications
+                        Job Notifications
                     </a>
                 </div>
 
