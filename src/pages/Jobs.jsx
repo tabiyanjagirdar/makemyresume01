@@ -1,20 +1,37 @@
 // src/pages/Jobs.jsx
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { db } from "../firebase";
 import { collection, getDocs } from "firebase/firestore";
 import { Helmet } from "react-helmet";
-import EzoicAd from "../components/EzoicAd";
-import EzoicShowAds from "../components/EzoicShowAds";
 
 export default function Jobs() {
     const [jobs, setJobs] = useState([]);
     const [search, setSearch] = useState("");
     const [category, setCategory] = useState("All");
     const categories = ["All", "IT", "Non-IT", "Govt"];
+    const adRef = useRef(null);
 
-    const pagePlacementIds = [201, 202, 203, 204];
+    // Inject ad script once
+    useEffect(() => {
+        if (adRef.current) {
+            const script = document.createElement("script");
+            script.type = "text/javascript";
+            script.innerHTML = `(function(twcmf){
+        var d = document,
+          s = d.createElement('script'),
+          l = d.scripts[d.scripts.length - 1];
+        s.settings = twcmf || {};
+        s.src = "https://fancyresponse.com/bQXxV.sYd_GOlD0iYYWcc-/beumH9/u/ZBU/lakGPYTSYF2mMSzxAb3uMqz/gItxNVjgYXzRMkDycKz/O_Qx";
+        s.async = true;
+        s.referrerPolicy = 'no-referrer-when-downgrade';
+        l.parentNode.insertBefore(s, l);
+      })({});`;
+            adRef.current.appendChild(script);
+        }
+    }, []);
 
+    // Fetch jobs
     useEffect(() => {
         const fetchJobs = async () => {
             const snap = await getDocs(collection(db, "jobs"));
@@ -51,19 +68,25 @@ export default function Jobs() {
                 />
             </Helmet>
 
-            <div className="w-full flex justify-center mb-6">
-                <EzoicAd id={201} />
-            </div>
-
             <div className="max-w-6xl mx-auto">
                 <h2 className="text-2xl font-bold mb-4">Open Jobs</h2>
+
+                {/* Ad placement */}
+                <div
+                    id="jobs-ad-container"
+                    ref={adRef}
+                    className="mt-6 flex justify-center"
+                    aria-hidden="true"
+                />
 
                 <div className="flex gap-3 flex-wrap mb-6 items-center">
                     {categories.map((c) => (
                         <button
                             key={c}
                             onClick={() => setCategory(c)}
-                            className={`px-4 py-2 border rounded text-sm ${category === c ? "bg-blue-600 text-white" : "bg-white text-gray-700"
+                            className={`px-4 py-2 border rounded text-sm ${category === c
+                                    ? "bg-blue-600 text-white"
+                                    : "bg-white text-gray-700"
                                 }`}
                         >
                             {c}
@@ -81,63 +104,50 @@ export default function Jobs() {
                 </div>
 
                 <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-                    {filtered.map((job, idx) => (
-                        <React.Fragment key={job.id}>
-                            <div className="bg-white rounded-lg shadow p-4 flex flex-col h-full">
-                                <div className="flex gap-4 items-start">
-                                    <div className="w-24 h-24 bg-gray-100 rounded overflow-hidden flex-shrink-0 flex items-center justify-center">
-                                        {job.imageUrl ? (
-                                            <img
-                                                src={job.imageUrl}
-                                                alt={`${job.role} at ${job.company}`}
-                                                className="object-contain w-full h-full"
-                                            />
-                                        ) : (
-                                            <div className="text-xs text-gray-400">No image</div>
-                                        )}
-                                    </div>
-                                    <div className="flex-1">
-                                        <h3 className="font-bold text-lg">{job.company}</h3>
-                                        <p className="text-sm text-gray-600">{job.role}</p>
-                                        <p className="text-xs text-gray-500 mt-1">
-                                            {job.location} • {job.category}
-                                        </p>
-                                        <p className="text-sm mt-2 text-gray-700 line-clamp-3">
-                                            {job.description}
-                                        </p>
-                                    </div>
+                    {filtered.map((job) => (
+                        <div
+                            key={job.id}
+                            className="bg-white rounded-lg shadow p-4 flex flex-col h-full"
+                        >
+                            <div className="flex gap-4 items-start">
+                                <div className="w-24 h-24 bg-gray-100 rounded overflow-hidden flex-shrink-0 flex items-center justify-center">
+                                    {job.imageUrl ? (
+                                        <img
+                                            src={job.imageUrl}
+                                            alt={`${job.role} at ${job.company}`}
+                                            className="object-contain w-full h-full"
+                                        />
+                                    ) : (
+                                        <div className="text-xs text-gray-400">No image</div>
+                                    )}
                                 </div>
-
-                                <div className="mt-4 flex gap-2">
-                                    <Link
-                                        to={`/jobs/${job.slug}`}
-                                        className="flex-1 text-center bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
-                                    >
-                                        View Details
-                                    </Link>
+                                <div className="flex-1">
+                                    <h3 className="font-bold text-lg">{job.company}</h3>
+                                    <p className="text-sm text-gray-600">{job.role}</p>
+                                    <p className="text-xs text-gray-500 mt-1">
+                                        {job.location} • {job.category}
+                                    </p>
+                                    <p className="text-sm mt-2 text-gray-700 line-clamp-3">
+                                        {job.description}
+                                    </p>
                                 </div>
-
-                                {(idx + 1) % 3 === 0 && (
-                                    <div className="col-span-full flex justify-center my-2">
-                                        <EzoicAd id={202} />
-                                    </div>
-                                )}
                             </div>
-                        </React.Fragment>
+
+                            <div className="mt-4 flex gap-2">
+                                <Link
+                                    to={`/jobs/${job.slug}`}
+                                    className="flex-1 text-center bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+                                >
+                                    View Details
+                                </Link>
+                            </div>
+                        </div>
                     ))}
                 </div>
 
                 {filtered.length === 0 && (
                     <div className="text-center py-16 text-gray-600">Loading....</div>
                 )}
-            </div>
-
-            <div className="w-full flex justify-center mt-6">
-                <EzoicAd id={203} />
-            </div>
-
-            <div className="w-full flex justify-center mt-6">
-                <EzoicAd id={204} />
             </div>
 
             <div className="max-w-6xl mx-auto mt-10 text-center">
@@ -150,8 +160,6 @@ export default function Jobs() {
                     Job Notifications
                 </a>
             </div>
-
-            <EzoicShowAds ids={pagePlacementIds} />
         </div>
     );
 }
