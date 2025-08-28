@@ -4,15 +4,14 @@ import { useParams, Link } from "react-router-dom";
 import { db } from "../firebase";
 import { collection, getDocs } from "firebase/firestore";
 import { Helmet } from "react-helmet";
-import EzoicAd from "../components/EzoicAd";
-import EzoicShowAds from "../components/EzoicShowAds";
+
 
 export default function JobDetails() {
     const { slug } = useParams();
     const [job, setJob] = useState(null);
     const [loading, setLoading] = useState(true);
 
-    const placementIds = [101, 102, 103];
+
 
     useEffect(() => {
         const fetchJob = async () => {
@@ -30,13 +29,7 @@ export default function JobDetails() {
         fetchJob();
     }, [slug]);
 
-    useEffect(() => {
-        if (!loading && job && window.ezstandalone?.cmd) {
-            window.ezstandalone.cmd.push(() => {
-                window.ezstandalone.showAds(...placementIds);
-            });
-        }
-    }, [loading, job, slug]);
+
 
     if (loading) return <div className="p-8 text-center">Loading job details...</div>;
     if (!job) return <div className="p-8 text-center">Job not found.</div>;
@@ -84,9 +77,6 @@ export default function JobDetails() {
                 <h2 className="text-xl text-gray-700 mt-1">{job.company}</h2>
                 <p className="text-sm text-gray-500 mb-3">{job.location} • {job.category}</p>
 
-                <div className="w-full flex justify-center my-4">
-                    <EzoicAd id={101} />
-                </div>
 
                 <div id="job-description-container" className="mb-6">
                     <h3 className="text-xl font-semibold mb-2 text-purple-600">Job Description</h3>
@@ -95,9 +85,7 @@ export default function JobDetails() {
                     </div>
                 </div>
 
-                <div className="w-full flex justify-center my-4">
-                    <EzoicAd id={102} />
-                </div>
+
 
                 <div className="flex gap-3 mb-4">
                     <a
@@ -116,9 +104,7 @@ export default function JobDetails() {
                     </Link>
                 </div>
 
-                <div className="w-full flex justify-center my-4">
-                    <EzoicAd id={103} />
-                </div>
+
 
                 <div className="max-w-3xl mx-auto mt-6 text-center">
                     <a
@@ -131,7 +117,7 @@ export default function JobDetails() {
                     </a>
                 </div>
 
-                <EzoicShowAds ids={placementIds} />
+
             </div>
         </div>
     );
