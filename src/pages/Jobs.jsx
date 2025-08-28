@@ -4,32 +4,18 @@ import { Link } from "react-router-dom";
 import { db } from "../firebase";
 import { collection, getDocs } from "firebase/firestore";
 import { Helmet } from "react-helmet";
+import BannerAd from "../BannerAd";
+
 
 export default function Jobs() {
     const [jobs, setJobs] = useState([]);
     const [search, setSearch] = useState("");
     const [category, setCategory] = useState("All");
     const categories = ["All", "IT", "Non-IT", "Govt"];
-    const adRef = useRef(null);
+
 
     // Inject ad script once
-    useEffect(() => {
-        if (adRef.current) {
-            const script = document.createElement("script");
-            script.type = "text/javascript";
-            script.innerHTML = `(function(twcmf){
-        var d = document,
-          s = d.createElement('script'),
-          l = d.scripts[d.scripts.length - 1];
-        s.settings = twcmf || {};
-        s.src = "https://fancyresponse.com/bQXxV.sYd_GOlD0iYYWcc-/beumH9/u/ZBU/lakGPYTSYF2mMSzxAb3uMqz/gItxNVjgYXzRMkDycKz/O_Qx";
-        s.async = true;
-        s.referrerPolicy = 'no-referrer-when-downgrade';
-        l.parentNode.insertBefore(s, l);
-      })({});`;
-            adRef.current.appendChild(script);
-        }
-    }, []);
+
 
     // Fetch jobs
     useEffect(() => {
@@ -72,12 +58,10 @@ export default function Jobs() {
                 <h2 className="text-2xl font-bold mb-4">Open Jobs</h2>
 
                 {/* Ad placement */}
-                <div
-                    id="jobs-ad-container"
-                    ref={adRef}
-                    className="mt-6 flex justify-center"
-                    aria-hidden="true"
-                />
+                <div className="my-4">
+                    <BannerAd />
+                </div>
+
 
                 <div className="flex gap-3 flex-wrap mb-6 items-center">
                     {categories.map((c) => (
@@ -85,8 +69,8 @@ export default function Jobs() {
                             key={c}
                             onClick={() => setCategory(c)}
                             className={`px-4 py-2 border rounded text-sm ${category === c
-                                    ? "bg-blue-600 text-white"
-                                    : "bg-white text-gray-700"
+                                ? "bg-blue-600 text-white"
+                                : "bg-white text-gray-700"
                                 }`}
                         >
                             {c}
