@@ -1,9 +1,7 @@
 {
-    "version": 2,
-  "routes": [
-    { "handle": "filesystem" },
-    { "src": "/ads.txt", "dest": "/ads.txt"
-    },
+  "routes":[
+    {
+      "source": "/ads.txt","destination": "/ads.txt"},
     { "source": "/courses", "destination": "/index.html" },
     { "source": "/jobs", "destination": "/index.html" },
     { "source": "/jobs/:id", "destination": "/index.html" },
