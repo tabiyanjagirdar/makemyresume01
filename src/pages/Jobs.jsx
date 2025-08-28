@@ -14,7 +14,7 @@ export default function Jobs() {
     const categories = ["All", "IT", "Non-IT", "Govt"];
 
 
-    // Inject ad script once
+
 
 
     // Fetch jobs
