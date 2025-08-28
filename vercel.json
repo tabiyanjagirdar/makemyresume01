@@ -1,8 +1,8 @@
 {
-   "rewrites": [
+   "routes": [
     {
-      "source": "/ads.txt",
-      "destination": "https://srv.adstxtmanager.com/19390/makemyresume.help"
+      "src": "/ads.txt",
+      "dest": "/ads.txt"
     },
     { "source": "/courses", "destination": "/index.html" },
     { "source": "/jobs", "destination": "/index.html" },
