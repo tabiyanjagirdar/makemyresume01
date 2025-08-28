@@ -1,8 +1,7 @@
 import { useEffect, useState } from "react";
 import { db } from "./firebase";
 import { collection, getDocs } from "firebase/firestore";
-import EzoicAd from "./components/EzoicAd";
-import EzoicShowAds from "./components/EzoicShowAds";
+
 import { Helmet } from "react-helmet";
 
 // Levenshtein distance for fuzzy search
@@ -42,15 +41,13 @@ function Courses() {
             setCourses(allCourses);
 
             // Initial Ezoic ad load
-            window.ezstandalone?.cmd?.push(() => window.ezstandalone.showAds(...ezoicPlacementIds));
+
         };
         fetchCourses();
     }, []);
 
     // Refresh Ezoic ads on category/search change
-    useEffect(() => {
-        window.ezstandalone?.cmd?.push(() => window.ezstandalone.showAds(...ezoicPlacementIds));
-    }, [category, search]);
+
 
     const categories = ["All", ...new Set(courses.map(c => c.category))];
     const visibleCategories = showAllCategories ? categories : categories.slice(0, 5);
@@ -113,9 +110,7 @@ function Courses() {
                 </script>
             </Helmet>
 
-            <div className="w-full flex justify-center my-4">
-                <EzoicAd id={101} />
-            </div>
+
 
             <div className="flex-1 p-6 max-w-6xl mx-auto w-full">
                 <h2 className="text-2xl font-bold mb-6">Free Courses</h2>
@@ -178,9 +173,7 @@ function Courses() {
                                     </a>
                                 </div>
 
-                                <div className="w-full flex justify-center my-4">
-                                    <EzoicAd id={102} />
-                                </div>
+
                             </div>
                         ))}
                     </div>
@@ -203,9 +196,7 @@ function Courses() {
                 )}
             </div>
 
-            <div className="w-full flex justify-center mt-4 mb-4">
-                <EzoicAd id={103} />
-            </div>
+
 
             {/* WhatsApp Join Button */}
             <div className="w-full flex justify-center mt-6 mb-6">
@@ -214,7 +205,7 @@ function Courses() {
                 </a>
             </div>
 
-            <EzoicShowAds ids={ezoicPlacementIds} />
+
         </div>
     );
 }
