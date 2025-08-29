@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { db } from "./firebase";
 import { collection, getDocs } from "firebase/firestore";
-
+import Ad300x250 from "./components/Ad300x250";
 import { Helmet } from "react-helmet";
 
 // Levenshtein distance for fuzzy search
@@ -114,7 +114,14 @@ function Courses() {
 
             <div className="flex-1 p-6 max-w-6xl mx-auto w-full">
                 <h2 className="text-2xl font-bold mb-6">Free Courses</h2>
-
+                <div className="flex justify-center mb-6">
+                    <div className="bg-white shadow-md rounded-2xl p-3 border border-gray-200">
+                        <Ad300x250 />
+                        <p className="text-xs text-gray-500 text-center mt-2">
+                            Advertisement
+                        </p>
+                    </div>
+                </div>
                 <div className="flex flex-wrap gap-3 mb-6 items-center">
                     {visibleCategories.map((cat, idx) => (
                         <button

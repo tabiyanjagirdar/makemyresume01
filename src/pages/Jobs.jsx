@@ -1,10 +1,8 @@
-// src/pages/Jobs.jsx
 import React, { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { db } from "../firebase";
 import { collection, getDocs } from "firebase/firestore";
 import { Helmet } from "react-helmet";
-import Ad300x250 from "../components/Ad300x250";
 
 export default function Jobs() {
     const [jobs, setJobs] = useState([]);
@@ -12,20 +10,17 @@ export default function Jobs() {
     const [category, setCategory] = useState("All");
     const categories = ["All", "IT", "Non-IT", "Govt"];
 
-    const topBannerRef = useRef(null);
     const nativeAdRef = useRef(null);
-    const stickyAdRef = useRef(null);
+    const sticky468TopRef = useRef(null); // Top 468x60 ad
+    const sticky468BottomRef = useRef(null); // Bottom 468x60 ad
 
     const loadScript = (src) => {
-        const s = document.createElement("script");
-        s.type = "text/javascript";
-        s.src = src;
-        s.async = true;
-        return s;
+        const script = document.createElement("script");
+        script.type = "text/javascript";
+        script.src = src;
+        script.async = true;
+        return script;
     };
-
-    // Top banner 300x250
-
 
     // Native ad
     useEffect(() => {
@@ -39,25 +34,46 @@ export default function Jobs() {
         nativeAdRef.current.appendChild(script);
     }, []);
 
-    // Sticky bottom 320x50
+    // Top 468x60 ad
     useEffect(() => {
-        if (!stickyAdRef.current) return;
-        stickyAdRef.current.innerHTML =
-            '<div id="container-sticky-ad" style="width:320px;height:50px;margin:0 auto"></div>';
+        if (!sticky468TopRef.current) return;
+        sticky468TopRef.current.innerHTML =
+            '<div id="container-sticky-top-468" style="width:468px;height:60px;margin:0 auto"></div>';
 
         window.atOptions = {
-            key: "cb0a8735930d31fbf1dcbf5f5a089bed",
+            key: "c0b964be2f9fff8857c0f9d347c60372",
             format: "iframe",
-            height: 50,
-            width: 320,
+            height: 60,
+            width: 468,
             params: {},
         };
 
         const script = loadScript(
-            "//www.highperformanceformat.com/cb0a8735930d31fbf1dcbf5f5a089bed/invoke.js"
+            "//www.highperformanceformat.com/c0b964be2f9fff8857c0f9d347c60372/invoke.js"
         );
         script.setAttribute("data-cfasync", "false");
-        document.getElementById("container-sticky-ad")?.appendChild(script);
+        document.getElementById("container-sticky-top-468")?.appendChild(script);
+    }, []);
+
+    // Bottom sticky 468x60 ad
+    useEffect(() => {
+        if (!sticky468BottomRef.current) return;
+        sticky468BottomRef.current.innerHTML =
+            '<div id="container-sticky-bottom-468" style="width:468px;height:60px;margin:0 auto"></div>';
+
+        window.atOptions = {
+            key: "c0b964be2f9fff8857c0f9d347c60372",
+            format: "iframe",
+            height: 60,
+            width: 468,
+            params: {},
+        };
+
+        const script = loadScript(
+            "//www.highperformanceformat.com/c0b964be2f9fff8857c0f9d347c60372/invoke.js"
+        );
+        script.setAttribute("data-cfasync", "false");
+        document.getElementById("container-sticky-bottom-468")?.appendChild(script);
     }, []);
 
     // Fetch jobs
@@ -80,14 +96,14 @@ export default function Jobs() {
         fetchJobs();
     }, []);
 
-    const filtered = jobs.filter((j) => {
-        const matchesCategory = category === "All" || j.category === category;
+    const filteredJobs = jobs.filter((job) => {
+        const matchesCategory = category === "All" || job.category === category;
         const q = search.trim().toLowerCase();
         const matchesSearch =
             !q ||
-            (j.company && j.company.toLowerCase().includes(q)) ||
-            (j.role && j.role.toLowerCase().includes(q)) ||
-            (j.description && j.description.toLowerCase().includes(q));
+            (job.company && job.company.toLowerCase().includes(q)) ||
+            (job.role && job.role.toLowerCase().includes(q)) ||
+            (job.description && job.description.toLowerCase().includes(q));
         return matchesCategory && matchesSearch;
     });
 
@@ -106,18 +122,8 @@ export default function Jobs() {
                     🔥 Open Jobs
                 </h2>
 
-                {/* Top banner ad */}
-
-
-                <div className="flex justify-center mb-6">
-                    <div className="bg-white shadow-md rounded-2xl p-3 border border-gray-200">
-                        <Ad300x250 />
-                        <p className="text-xs text-gray-500 text-center mt-2">
-                            Advertisement
-                        </p>
-                    </div>
-                </div>
-
+                {/* Top 468x60 ad */}
+                {/* <div ref={sticky468TopRef} className="mb-6 flex justify-center"></div> */}
 
                 {/* Filters */}
                 <div className="flex gap-3 flex-wrap mb-6 items-center">
@@ -147,7 +153,7 @@ export default function Jobs() {
 
                 {/* Jobs grid */}
                 <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-                    {filtered.map((job) => (
+                    {filteredJobs.map((job) => (
                         <div
                             key={job.id}
                             className="bg-white rounded-xl shadow-md hover:shadow-lg transition transform hover:-translate-y-1 p-5 flex flex-col h-full"
@@ -189,7 +195,7 @@ export default function Jobs() {
                     ))}
                 </div>
 
-                {filtered.length === 0 && (
+                {filteredJobs.length === 0 && (
                     <div className="text-center py-16 text-gray-600 animate-pulse">
                         Loading jobs...
                     </div>
@@ -207,19 +213,19 @@ export default function Jobs() {
                 </div>
             </div>
 
-            {/* Sticky bottom ad */}
+            {/* Bottom sticky 468x60 ad */}
             <div
-                ref={stickyAdRef}
+                ref={sticky468BottomRef}
                 style={{
                     position: "fixed",
                     bottom: 0,
-                    left: 0,
-                    right: 0,
-                    textAlign: "center",
-                    background: "#fff",
+                    left: "50%",
+                    transform: "translateX(-50%)",
                     zIndex: 9999,
-                    padding: "6px 0",
-                    boxShadow: "0 -2px 10px rgba(0,0,0,0.15)",
+                    width: "100%",
+                    maxWidth: "468px",
+                    padding: "0 6px",
+                    boxSizing: "border-box",
                 }}
             />
         </div>

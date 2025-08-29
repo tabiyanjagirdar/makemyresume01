@@ -16,7 +16,7 @@ import Jobs from "./pages/Jobs";
 import JobDetails from "./pages/JobDetails";
 import AdminJobs from "./pages/AdminJobs"; // ✅ Admin job posting page
 import PrivacyPolicy from "./pages/PrivacyPolicy";
-import { FaInstagram, FaWhatsapp, FaEnvelope } from "react-icons/fa";
+import { FaInstagram, FaWhatsapp, FaEnvelope, FaBook, FaBriefcase } from "react-icons/fa";
 
 const App = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -97,28 +97,43 @@ const App = () => {
         </header>
 
         {/* Free Courses, Job Updates & Jobs Buttons */}
-        <div className="flex justify-center gap-4 py-3 flex-wrap">
+        <div className="flex flex-col items-center gap-4 py-6 px-2">
+          {/* Free Courses Button */}
           <Link
             to="/courses"
-            className="bg-blue-600 text-white px-6 py-2 rounded-lg text-lg font-medium hover:bg-blue-700 transition"
+            className="flex w-full max-w-md items-center justify-center gap-2 px-6 py-3 rounded-md font-semibold text-base
+               text-black border border-black bg-white hover:bg-black hover:text-white transition-colors duration-300"
           >
+            <FaBook className="w-5 h-5" />
             Free Courses
           </Link>
+
+          {/* WhatsApp Notifications Button */}
           <a
             href="https://chat.whatsapp.com/GwPmoYzo5Qh7OUitJjGX4g"
             target="_blank"
             rel="noopener noreferrer"
-            className="bg-green-600 text-white px-6 py-2 rounded-lg text-lg font-medium hover:bg-green-700 transition"
+            className="flex w-full max-w-md items-center justify-center gap-2 px-6 py-3 rounded-md font-semibold text-base
+               text-black border border-black bg-white hover:bg-black hover:text-white transition-colors duration-300"
           >
-            Job Updates
+            <FaWhatsapp className="w-5 h-5" />
+            Job Notifications
           </a>
+
+          {/* Jobs Button */}
           <Link
             to="/jobs"
-            className="bg-purple-600 text-white px-6 py-2 rounded-lg text-lg font-medium hover:bg-purple-700 transition"
+            className="flex w-full max-w-md items-center justify-center gap-2 px-6 py-3 rounded-md font-semibold text-base
+               text-black border border-black bg-white hover:bg-black hover:text-white transition-colors duration-300"
           >
+            <FaBriefcase className="w-5 h-5" />
             Jobs
           </Link>
         </div>
+
+
+
+
 
         {/* Main Content */}
         <main className="flex-grow">
