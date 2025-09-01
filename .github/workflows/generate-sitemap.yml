@@ -1,0 +1,49 @@
+name: Generate sitemap (daily)
+
+on:
+  schedule:
+    # runs once per day at 00:00 UTC (change as needed; GitHub uses UTC)
+    - cron: "0 0 * * *"
+  workflow_dispatch: {}
+
+permissions:
+  contents: write # needed to commit sitemap.xml back to repo
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22" # match your local Node (22.x worked for you)
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Create serviceAccountKey.json from secret
+        run: |
+          echo "${{ secrets.SERVICE_ACCOUNT_KEY }}" > serviceAccountKey.json
+          chmod 600 serviceAccountKey.json
+
+      - name: Generate sitemap
+        run: npm run generate-sitemap
+
+      - name: Show public folder contents (for debug)
+        run: ls -la public || true
+
+      - name: Commit and push sitemap.xml (if changed)
+        uses: EndBug/add-and-commit@v9
+        with:
+          author_name: "github-actions[bot]"
+          author_email: "41898282+github-actions[bot]@users.noreply.github.com"
+          message: "chore(sitemap): update sitemap [skip ci]"
+          add: "public/sitemap.xml"
+          push: true
+
+      - name: Trigger Vercel deploy hook (optional)
+        if: ${{ secrets.VERCEL_DEPLOY_HOOK }}
+        run: curl -X POST "${{ secrets.VERCEL_DEPLOY_HOOK }}"
