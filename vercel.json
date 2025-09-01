@@ -6,7 +6,11 @@
     { "src": "/jobs", "dest": "/index.html" },
     { "src": "/jobs/:id", "dest": "/index.html" },
     { "src": "/adminjobs", "dest": "/index.html" },
-    { "src": "/sitemap.xml", "dest": "/sitemap.xml" },
+   {
+      "src": "/sitemap.xml",
+      "headers": { "Content-Type": "application/xml" },
+      "dest": "/sitemap.xml"
+    },
     { "src": "/admin", "dest": "/index.html" },
     { "src": "/(.*\\.(js|css|png|jpg|jpeg|gif|svg|ico|json))", "dest": "/$1" },
     { "src": "/(.*)", "dest": "/index.html" }
