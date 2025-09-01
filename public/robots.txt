@@ -3,5 +3,5 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://makemyresume.help/api/sitemap
+Sitemap: https://makemyresume.help/sitemap.xml
 
