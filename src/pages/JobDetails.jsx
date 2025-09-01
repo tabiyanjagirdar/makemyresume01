@@ -7,6 +7,7 @@ import { Helmet } from "react-helmet";
 import Ad300x250 from "../components/Ad300x250";
 import { FaWhatsapp } from "react-icons/fa";
 import ScrollAd from "../components/ScrollAd";
+import applyNowAd from '../assets/applynowad.png';
 
 
 export default function JobDetails() {
@@ -92,6 +93,24 @@ export default function JobDetails() {
                         {job.location} • {job.category}
                     </p>
                 </div>
+
+                <div className="flex justify-center mb-6">
+                    <div className="bg-white shadow-md rounded-2xl p-3 border border-gray-200">
+                        {/* Clickable image */}
+                        <a href="https://www.revenuecpmgate.com/cursb43u?key=3286d3862d0ba4b74b875af9c4c51b42">
+                            <img
+                                src={applyNowAd}
+                                alt="Advertisement"
+                                className="rounded-2xl"
+                            />
+                        </a>
+                        <p className="text-xs text-gray-500 text-center mt-2">
+                            Advertisement
+                        </p>
+                    </div>
+                </div>
+
+                <div className="flex justify-center align-middle text-3xl text-red-500 font-bold">Apply Link in bottom</div>
 
                 {/* Top Banner Ad */}
                 <div className="flex justify-center mb-6">
