@@ -26,8 +26,6 @@ function Courses() {
     const [category, setCategory] = useState("All");
     const [showAllCategories, setShowAllCategories] = useState(false);
 
-    const ezoicPlacementIds = [101, 102, 103];
-
     // Fetch courses
     useEffect(() => {
         const fetchCourses = async () => {
@@ -40,15 +38,9 @@ function Courses() {
                     return dateB - dateA;
                 });
             setCourses(allCourses);
-
-            // Initial Ezoic ad load
-
         };
         fetchCourses();
     }, []);
-
-    // Refresh Ezoic ads on category/search change
-
 
     const categories = ["All", ...new Set(courses.map(c => c.category))];
     const visibleCategories = showAllCategories ? categories : categories.slice(0, 5);
@@ -95,6 +87,8 @@ function Courses() {
                 <meta property="og:url" content="https://makemyresume.help/courses" />
                 <meta property="og:image" content="https://makemyresume.help/logo.png" />
                 <meta name="twitter:card" content="summary_large_image" />
+
+                {/* JSON-LD Schema for Google Rich Results */}
                 <script type="application/ld+json">
                     {JSON.stringify({
                         "@context": "https://schema.org",
@@ -105,16 +99,37 @@ function Courses() {
                             "position": idx + 1,
                             "name": course.title,
                             "description": course.description,
-                            "url": course.link
+                            "url": course.link,
+                            "provider": {
+                                "@type": "Organization",
+                                "name": "MakeMyResume",
+                                "sameAs": "https://makemyresume.help"
+                            },
+                            "hasCourseInstance": {
+                                "@type": "CourseInstance",
+                                "name": course.title,
+                                "description": course.description,
+                                "url": course.link,
+                                "instructor": {
+                                    "@type": "Person",
+                                    "name": course.instructor || "MakeMyResume Team"
+                                },
+                                "offers": {
+                                    "@type": "Offer",
+                                    "url": course.link,
+                                    "price": course.price || "0",
+                                    "priceCurrency": "INR",
+                                    "availability": "https://schema.org/InStock"
+                                }
+                            }
                         }))
                     })}
                 </script>
             </Helmet>
 
-
-
             <div className="flex-1 p-6 max-w-6xl mx-auto w-full">
                 <h2 className="text-2xl font-bold mb-6">Free Courses</h2>
+
                 <div className="flex justify-center mb-6">
                     <div className="bg-white shadow-md rounded-2xl p-3 border border-gray-200">
                         <Ad300x250 />
@@ -123,6 +138,7 @@ function Courses() {
                         </p>
                     </div>
                 </div>
+
                 <div className="flex flex-wrap gap-3 mb-6 items-center">
                     {visibleCategories.map((cat, idx) => (
                         <button
@@ -180,8 +196,6 @@ function Courses() {
                                         Enroll Now
                                     </a>
                                 </div>
-
-
                             </div>
                         ))}
                     </div>
@@ -204,8 +218,6 @@ function Courses() {
                 )}
             </div>
 
-
-
             {/* WhatsApp Join Button */}
             <div className="w-full flex justify-center mt-6 mb-6">
                 <a href="https://chat.whatsapp.com/GwPmoYzo5Qh7OUitJjGX4g" target="_blank" rel="noopener noreferrer" className="px-6 py-3 bg-green-500 text-white rounded-lg font-semibold hover:bg-green-600 transition">
@@ -213,7 +225,6 @@ function Courses() {
                 </a>
             </div>
             <ScrollAd />
-
         </div>
     );
 }
