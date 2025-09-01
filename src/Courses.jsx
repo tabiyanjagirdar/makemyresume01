@@ -3,6 +3,7 @@ import { db } from "./firebase";
 import { collection, getDocs } from "firebase/firestore";
 import Ad300x250 from "./components/Ad300x250";
 import { Helmet } from "react-helmet";
+import ScrollAd from "./components/ScrollAd";
 
 // Levenshtein distance for fuzzy search
 function levenshtein(a, b) {
@@ -211,7 +212,7 @@ function Courses() {
                     Join WhatsApp Group for Course Notifications
                 </a>
             </div>
-
+            <ScrollAd />
 
         </div>
     );
