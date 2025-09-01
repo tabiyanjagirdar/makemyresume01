@@ -2,9 +2,9 @@ name: Generate sitemap (daily)
 
 on:
   schedule:
-    # runs once per day at 00:00 UTC (change as needed; GitHub uses UTC)
+    # Runs once per day at 00:00 UTC
     - cron: "0 0 * * *"
-  workflow_dispatch: {}
+  workflow_dispatch: {} # allow manual trigger
 
 permissions:
   contents: write # needed to commit sitemap.xml back to repo
@@ -19,7 +19,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "22" # match your local Node (22.x worked for you)
+          node-version: "22" # match your local Node
 
       - name: Install dependencies
         run: npm ci
@@ -45,5 +45,5 @@ jobs:
           push: true
 
       - name: Trigger Vercel deploy hook (optional)
-        if: ${{ secrets.VERCEL_DEPLOY_HOOK }}
+        if: ${{ secrets.VERCEL_DEPLOY_HOOK != '' }}
         run: curl -X POST "${{ secrets.VERCEL_DEPLOY_HOOK }}"

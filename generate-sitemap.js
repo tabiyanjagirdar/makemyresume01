@@ -1,13 +1,10 @@
-// generate-sitemap.js
 import fs from "fs";
+import path from "path";
 import admin from "firebase-admin";
 
-// 🔹 Load service account JSON safely
-const serviceAccount = JSON.parse(
-  fs.readFileSync(new URL("./serviceAccountKey.json", import.meta.url), "utf8")
-);
+// Load Firebase Service Account from GitHub Secret (or local env for testing)
+const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT || "{}");
 
-// 🔹 Initialize Firebase Admin only once
 if (!admin.apps.length) {
   admin.initializeApp({
     credential: admin.credential.cert(serviceAccount),
@@ -15,60 +12,67 @@ if (!admin.apps.length) {
 }
 
 const db = admin.firestore();
-const BASE_URL = "https://www.makemyresume.help";
 
 async function generateSitemap() {
-  const pages = [];
+  try {
+    const pages = [
+      { url: "", priority: 1.0 },
+      { url: "jobs", priority: 0.8 },
+      { url: "courses", priority: 0.8 },
+    ];
 
-  // 🔹 Static Pages
-  const now = new Date().toISOString();
-  pages.push({ url: `${BASE_URL}/`, lastmod: now, priority: 1.0 });
-  pages.push({ url: `${BASE_URL}/jobs`, lastmod: now, priority: 0.9 });
-  pages.push({ url: `${BASE_URL}/courses`, lastmod: now, priority: 0.9 });
-
-  // 🔹 Jobs Collection
-  const jobsSnap = await db.collection("jobs").get();
-  jobsSnap.forEach((doc) => {
-    const job = doc.data();
-    pages.push({
-      url: `${BASE_URL}/jobs/${job.slug}`,
-      lastmod: (job.updatedAt?.toDate?.() || new Date()).toISOString(),
-      priority: 0.8,
+    // Fetch jobs from Firestore
+    const jobsSnapshot = await db.collection("jobs").get();
+    jobsSnapshot.forEach((doc) => {
+      const job = doc.data();
+      if (job.slug) {
+        pages.push({
+          url: `jobs/${job.slug}`,
+          priority: 0.7,
+        });
+      }
     });
-  });
 
-  // 🔹 Courses Collection
-  const coursesSnap = await db.collection("courses").get();
-  coursesSnap.forEach((doc) => {
-    const course = doc.data();
-    pages.push({
-      url: `${BASE_URL}/courses/${course.slug}`,
-      lastmod: (course.updatedAt?.toDate?.() || new Date()).toISOString(),
-      priority: 0.8,
+    // Fetch courses from Firestore
+    const coursesSnapshot = await db.collection("courses").get();
+    coursesSnapshot.forEach((doc) => {
+      const course = doc.data();
+      if (course.slug) {
+        pages.push({
+          url: `courses/${course.slug}`,
+          priority: 0.7,
+        });
+      }
     });
-  });
 
-  // 🔹 Build XML Sitemap
-  const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-${pages
-  .map(
-    (p) => `
+    // Build XML
+    const baseUrl = "https://www.makemyresume.help";
+    const urls = pages
+      .map(
+        (page) => `
   <url>
-    <loc>${p.url}</loc>
-    <lastmod>${p.lastmod}</lastmod>
+    <loc>${baseUrl}/${page.url}</loc>
+    <lastmod>${new Date().toISOString()}</lastmod>
     <changefreq>daily</changefreq>
-    <priority>${p.priority}</priority>
+    <priority>${page.priority}</priority>
   </url>`
-  )
-  .join("")}
+      )
+      .join("");
+
+    const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+${urls}
 </urlset>`;
 
-  // 🔹 Save sitemap.xml in public/
-  fs.writeFileSync("public/sitemap.xml", sitemap, "utf8");
-  console.log("✅ Sitemap generated at public/sitemap.xml");
+    // Save to public folder
+    const filePath = path.resolve("public", "sitemap.xml");
+    fs.writeFileSync(filePath, sitemap, "utf8");
+
+    console.log("✅ Sitemap generated at public/sitemap.xml");
+  } catch (err) {
+    console.error("❌ Error generating sitemap:", err);
+    process.exit(1);
+  }
 }
 
-generateSitemap().catch((err) => {
-  console.error("❌ Error generating sitemap:", err);
-});
+generateSitemap();
