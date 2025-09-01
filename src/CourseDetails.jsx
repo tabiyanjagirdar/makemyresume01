@@ -1,4 +1,3 @@
-// src/pages/CourseDetails.jsx
 import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { db } from "./firebase";
@@ -21,6 +20,24 @@ function CourseDetails() {
         };
         fetchCourse();
     }, [id]);
+
+    // Inject Native Ad script
+    useEffect(() => {
+        const container = document.getElementById("container-eb5de8b2878b13d29759ac560b672011");
+
+        if (container) {
+            // Clear any previous content
+            container.innerHTML = "";
+
+            const script = document.createElement("script");
+            script.src = "//pl27485819.revenuecpmgate.com/eb5de8b2878b13d29759ac560b672011/invoke.js";
+            script.async = true;
+            script.setAttribute("data-cfasync", "false");
+
+            container.appendChild(script);
+        }
+    }, [course]); // Run when course loads
+
 
     if (!course) return <p className="text-center mt-10 text-gray-500 animate-pulse">Loading...</p>;
 
@@ -45,7 +62,6 @@ function CourseDetails() {
                 transition={{ duration: 0.5 }}
                 className="bg-white shadow-xl rounded-3xl overflow-hidden max-w-4xl mx-auto w-full"
             >
-                {/* Image Banner */}
                 {course.imageUrl && (
                     <div className="relative h-64 sm:h-72 md:h-96 w-full overflow-hidden">
                         <img
@@ -57,7 +73,6 @@ function CourseDetails() {
                     </div>
                 )}
 
-                {/* Content */}
                 <div className="p-4 sm:p-6 md:p-10">
                     <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-extrabold mb-4 text-gray-900">
                         {course.title}
@@ -69,7 +84,7 @@ function CourseDetails() {
                         </span>
                     </div>
 
-                    {/* Advertisement */}
+                    {/* Top Ad */}
                     <div className="flex justify-center mb-6">
                         <div className="bg-white shadow-md rounded-2xl p-3 border border-gray-200">
                             <Ad300x250 />
@@ -81,19 +96,34 @@ function CourseDetails() {
                         {course.description}
                     </p>
 
-                    {/* Sponsored Section */}
-                    <div className="bg-green-50 border border-green-200 rounded-lg shadow p-4 mt-10 text-center">
-                        <p className="text-xs uppercase font-semibold text-green-700 mb-2">Sponsored</p>
-                        <div
-                            id="container-eb5de8b2878b13d29759ac560b672011"
-                            className="flex justify-center w-full max-w-md mx-auto"
-                        />
-                        <p className="text-sm text-green-700 mt-2">🔔 Don’t miss these exclusive offers</p>
-                    </div>
+                    {/* Native Ad Above Enroll Now */}
+                    {/* Native Ad */}
+                    <div
+                        id="container-eb5de8b2878b13d29759ac560b672011"
+                        className="flex justify-center w-full max-w-md mx-auto mb-6"
+                    />
+
 
                     {/* Action Buttons */}
                     <div className="flex flex-col sm:flex-row gap-4 mt-6">
-                        <a href={course.link} target="_blank" rel="noopener noreferrer" className="w-full inline-flex items-center justify-center px-4 py-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-all font-semibold shadow-lg mb-4" > Enroll Now </a> {/* WhatsApp Button */} <a href="https://chat.whatsapp.com/GwPmoYzo5Qh7OUitJjGX4g" target="_blank" rel="noopener noreferrer" className="w-full inline-flex items-center justify-center px-4 py-3 bg-green-600 text-white rounded-xl hover:bg-green-700 transition-all font-semibold shadow-lg space-x-2" > <FaWhatsapp className="w-5 h-5" /> <span>Course Notifications</span> </a> </div>
+                        <a
+                            href={course.link}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="w-full inline-flex items-center justify-center px-4 py-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-all font-semibold shadow-lg mb-4"
+                        >
+                            Enroll Now
+                        </a>
+                        <a
+                            href="https://chat.whatsapp.com/GwPmoYzo5Qh7OUitJjGX4g"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="w-full inline-flex items-center justify-center px-4 py-3 bg-green-600 text-white rounded-xl hover:bg-green-700 transition-all font-semibold shadow-lg space-x-2"
+                        >
+                            <FaWhatsapp className="w-5 h-5" />
+                            <span>Course Notifications</span>
+                        </a>
+                    </div>
 
                     {/* Course Highlights */}
                     <div className="bg-gray-50 p-4 sm:p-6 md:p-8 border-t border-gray-200 mt-8">
