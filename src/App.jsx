@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 
 import { Analytics } from "@vercel/analytics/react"; // ✅ Keep Analytics
 // import Services from "./Services"; // ✅ Keep Services
-
+import CourseDetails from "./CourseDetails"; // Course details page
 import AboutUs from "./AboutUs";
 import CompanySlider from "./CompanySlider";
 import ResourceCards from "./ResourceCards";
@@ -156,6 +156,8 @@ const App = () => {
             <Route path="/jobs" element={<Jobs />} />
             <Route path="/jobs/:slug" element={<JobDetails />} />
             <Route path="/adminjobs" element={<AdminJobs />} />{/* ✅ Admin Job Posting */}
+            <Route path="/courses" element={<Courses />} />
+            <Route path="/courses/:id" element={<CourseDetails />} />
             <Route path="/privacy-policy" element={<PrivacyPolicy />} /> {/* ← add this */}
             <Route
               path="/contact"

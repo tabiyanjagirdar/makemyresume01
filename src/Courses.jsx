@@ -1,24 +1,11 @@
+// src/pages/Courses.jsx
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import { db } from "./firebase";
-import { collection, getDocs } from "firebase/firestore";
+import { collection, getDocs, deleteDoc, doc } from "firebase/firestore";
 import Ad300x250 from "./components/Ad300x250";
-import { Helmet } from "react-helmet";
 import ScrollAd from "./components/ScrollAd";
-
-// Levenshtein distance for fuzzy search
-function levenshtein(a, b) {
-    const m = a.length, n = b.length;
-    const dp = Array.from({ length: m + 1 }, () => Array(n + 1).fill(0));
-    for (let i = 0; i <= m; i++) dp[i][0] = i;
-    for (let j = 0; j <= n; j++) dp[0][j] = j;
-    for (let i = 1; i <= m; i++) {
-        for (let j = 1; j <= n; j++) {
-            if (a[i - 1] === b[j - 1]) dp[i][j] = dp[i - 1][j - 1];
-            else dp[i][j] = 1 + Math.min(dp[i - 1][j], dp[i][j - 1], dp[i - 1][j - 1]);
-        }
-    }
-    return dp[m][n];
-}
+import { Helmet } from "react-helmet";
 
 function Courses() {
     const [courses, setCourses] = useState([]);
@@ -26,48 +13,50 @@ function Courses() {
     const [category, setCategory] = useState("All");
     const [showAllCategories, setShowAllCategories] = useState(false);
 
-    // Fetch courses
     useEffect(() => {
         const fetchCourses = async () => {
             const snapshot = await getDocs(collection(db, "courses"));
-            const allCourses = snapshot.docs
-                .map(doc => ({ id: doc.id, ...doc.data() }))
-                .sort((a, b) => {
-                    const dateA = a.createdAt?.toDate ? a.createdAt.toDate() : new Date(a.createdAt);
-                    const dateB = b.createdAt?.toDate ? b.createdAt.toDate() : new Date(b.createdAt);
-                    return dateB - dateA;
-                });
-            setCourses(allCourses);
+            const allCourses = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+
+            // Filter out courses older than 7 days and delete them from Firestore
+            const now = new Date();
+            const validCourses = [];
+
+            for (let course of allCourses) {
+                const createdDate = course.createdAt?.toDate ? course.createdAt.toDate() : new Date(course.createdAt);
+                const diffDays = (now - createdDate) / (1000 * 60 * 60 * 24);
+                if (diffDays > 7) {
+                    // Delete from Firestore
+                    await deleteDoc(doc(db, "courses", course.id));
+                } else {
+                    validCourses.push(course);
+                }
+            }
+
+            // Sort newest first
+            validCourses.sort((a, b) => {
+                const dateA = a.createdAt?.toDate ? a.createdAt.toDate() : new Date(a.createdAt);
+                const dateB = b.createdAt?.toDate ? b.createdAt.toDate() : new Date(b.createdAt);
+                return dateB - dateA;
+            });
+
+            setCourses(validCourses);
         };
+
         fetchCourses();
     }, []);
 
     const categories = ["All", ...new Set(courses.map(c => c.category))];
     const visibleCategories = showAllCategories ? categories : categories.slice(0, 5);
 
-    const filteredCourses = courses
-        .filter(course =>
-            (category === "All" || course.category === category) &&
-            (course.title.toLowerCase().includes(search.toLowerCase()) ||
-                course.description.toLowerCase().includes(search.toLowerCase()))
-        )
-        .sort((a, b) => {
-            const dateA = a.createdAt?.toDate ? a.createdAt.toDate() : new Date(a.createdAt);
-            const dateB = b.createdAt?.toDate ? b.createdAt.toDate() : new Date(b.createdAt);
-            return dateB - dateA;
-        });
-
-    let suggestions = [];
-    if (filteredCourses.length === 0 && search.trim() !== "") {
-        suggestions = courses.filter(
-            course =>
-                levenshtein(course.title.toLowerCase(), search.toLowerCase()) <= 3 ||
-                levenshtein(course.description.toLowerCase(), search.toLowerCase()) <= 3
-        );
-    }
+    const filteredCourses = courses.filter(course =>
+        (category === "All" || course.category === category) &&
+        (course.title.toLowerCase().includes(search.toLowerCase()) ||
+            course.description.toLowerCase().includes(search.toLowerCase()))
+    );
 
     const getDateLabel = date => {
-        const courseDate = date.toDate ? date.toDate() : new Date(date);
+        const courseDate = date?.toDate ? date.toDate() : new Date(date);
         const today = new Date();
         const yesterday = new Date();
         yesterday.setDate(today.getDate() - 1);
@@ -81,50 +70,6 @@ function Courses() {
             <Helmet>
                 <title>Free Courses - makemyresume.help</title>
                 <meta name="description" content="Explore free courses on makemyresume.help. Learn, enroll, and upgrade your skills with our curated courses." />
-                <meta property="og:title" content="Free Courses - makemyresume.help" />
-                <meta property="og:description" content="Explore free courses on makemyresume.help. Learn, enroll, and upgrade your skills with our curated courses." />
-                <meta property="og:type" content="website" />
-                <meta property="og:url" content="https://makemyresume.help/courses" />
-                <meta property="og:image" content="https://makemyresume.help/logo.png" />
-                <meta name="twitter:card" content="summary_large_image" />
-
-                {/* JSON-LD Schema for Google Rich Results */}
-                <script type="application/ld+json">
-                    {JSON.stringify({
-                        "@context": "https://schema.org",
-                        "@type": "ItemList",
-                        "name": "Free Courses",
-                        "itemListElement": filteredCourses.map((course, idx) => ({
-                            "@type": "Course",
-                            "position": idx + 1,
-                            "name": course.title,
-                            "description": course.description,
-                            "url": course.link,
-                            "provider": {
-                                "@type": "Organization",
-                                "name": "MakeMyResume",
-                                "sameAs": "https://makemyresume.help"
-                            },
-                            "hasCourseInstance": {
-                                "@type": "CourseInstance",
-                                "name": course.title,
-                                "description": course.description,
-                                "url": course.link,
-                                "instructor": {
-                                    "@type": "Person",
-                                    "name": course.instructor || "MakeMyResume Team"
-                                },
-                                "offers": {
-                                    "@type": "Offer",
-                                    "url": course.link,
-                                    "price": course.price || "0",
-                                    "priceCurrency": "INR",
-                                    "availability": "https://schema.org/InStock"
-                                }
-                            }
-                        }))
-                    })}
-                </script>
             </Helmet>
 
             <div className="flex-1 p-6 max-w-6xl mx-auto w-full">
@@ -133,12 +78,11 @@ function Courses() {
                 <div className="flex justify-center mb-6">
                     <div className="bg-white shadow-md rounded-2xl p-3 border border-gray-200">
                         <Ad300x250 />
-                        <p className="text-xs text-gray-500 text-center mt-2">
-                            Advertisement
-                        </p>
+                        <p className="text-xs text-gray-500 text-center mt-2">Advertisement</p>
                     </div>
                 </div>
 
+                {/* Categories */}
                 <div className="flex flex-wrap gap-3 mb-6 items-center">
                     {visibleCategories.map((cat, idx) => (
                         <button
@@ -162,6 +106,7 @@ function Courses() {
                     )}
                 </div>
 
+                {/* Search */}
                 <div className="relative flex items-center mb-6">
                     <input
                         type="text"
@@ -170,14 +115,9 @@ function Courses() {
                         onChange={e => setSearch(e.target.value)}
                         className="border p-2 pl-10 w-full rounded shadow-sm focus:outline-none"
                     />
-                    <button
-                        onClick={() => setSearch(search)}
-                        className="absolute left-3 text-gray-500 hover:text-gray-700"
-                    >
-                        🔍
-                    </button>
                 </div>
 
+                {/* Courses Grid */}
                 {filteredCourses.length > 0 ? (
                     <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
                         {filteredCourses.map(course => (
@@ -188,13 +128,21 @@ function Courses() {
 
                                 {course.imageUrl && <img src={course.imageUrl} alt={course.title} className="w-full h-40 object-cover rounded mb-3" />}
                                 <h3 className="text-lg font-semibold">{course.title}</h3>
-                                <p className="text-gray-600 text-sm">{course.description}</p>
+                                <p className="text-gray-600 text-sm">
+                                    {course.description.split(" ").length > 10
+                                        ? course.description.split(" ").slice(0, 10).join(" ") + "..."
+                                        : course.description
+                                    }
+                                </p>
                                 <p className="text-xs mt-1 text-gray-500 italic">{course.category}</p>
 
                                 <div className="flex gap-2 mt-3">
-                                    <a href={course.link} target="_blank" rel="noopener noreferrer" className="flex-1 text-center bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-700 transition">
+                                    <Link
+                                        to={`/courses/${course.id}`}
+                                        className="flex-1 text-center bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-700 transition"
+                                    >
                                         Enroll Now
-                                    </a>
+                                    </Link>
                                 </div>
                             </div>
                         ))}
@@ -202,18 +150,6 @@ function Courses() {
                 ) : (
                     <div className="text-center mt-10 animate-pulse">
                         <h3 className="text-lg font-semibold text-gray-700">❌ No courses found</h3>
-                        {suggestions.length > 0 && (
-                            <div className="mt-4">
-                                <p className="text-gray-600">Did you mean:</p>
-                                <div className="flex flex-wrap justify-center gap-3 mt-3">
-                                    {suggestions.map(s => (
-                                        <span key={s.id} onClick={() => setSearch(s.title)} className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full cursor-pointer hover:bg-blue-200">
-                                            {s.title}
-                                        </span>
-                                    ))}
-                                </div>
-                            </div>
-                        )}
                     </div>
                 )}
             </div>
@@ -224,6 +160,7 @@ function Courses() {
                     Join WhatsApp Group for Course Notifications
                 </a>
             </div>
+
             <ScrollAd />
         </div>
     );
