@@ -69,11 +69,49 @@ export default function JobDetails() {
     return (
         <div className="p-6 max-w-3xl mx-auto">
             <Helmet>
-                <title>
-                    {job.role} at {job.company} | MakeMyResume
-                </title>
+                <title>{job.role} at {job.company} | MakeMyResume</title>
                 <meta name="description" content={job.description.slice(0, 160)} />
+
+                <script type="application/ld+json">
+                    {JSON.stringify({
+                        "@context": "https://schema.org/",
+                        "@type": "JobPosting",
+                        title: job.role,
+                        description: job.description,
+                        identifier: {
+                            "@type": "PropertyValue",
+                            name: job.company,
+                            value: job.id,
+                        },
+                        datePosted: job.createdAt?.toDate
+                            ? job.createdAt.toDate().toISOString()
+                            : new Date().toISOString(),
+                        hiringOrganization: {
+                            "@type": "Organization",
+                            name: job.company,
+                            sameAs: "https://makemyresume.net", // change if you have a company link
+                            logo: job.imageUrl || "https://makemyresume.net/default-logo.png",
+                        },
+                        jobLocation: {
+                            "@type": "Place",
+                            address: {
+                                "@type": "PostalAddress",
+                                addressLocality: job.location || "India",
+                                addressCountry: "IN",
+                            },
+                        },
+                        employmentType: "FULL_TIME",
+                        validThrough: new Date(
+                            Date.now() + 1000 * 60 * 60 * 24 * 30
+                        ).toISOString(), // 30 days validity
+                        applicantLocationRequirements: {
+                            "@type": "Country",
+                            name: "India",
+                        },
+                    })}
+                </script>
             </Helmet>
+
 
             <div className="bg-white p-6 rounded-2xl shadow-xl hover:shadow-2xl transition-shadow duration-300 space-y-6">
                 {/* Company Logo */}

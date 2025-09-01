@@ -1,51 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-
-  <!-- Homepage -->
-  <url>
-    <loc>https://www.makemyresume.help/</loc>
-    <priority>1.0</priority>
-    <changefreq>daily</changefreq>
-  </url>
-
-  <!-- Jobs page -->
-  <url>
-    <loc>https://www.makemyresume.help/jobs</loc>
-    <priority>0.9</priority>
-    <changefreq>daily</changefreq>
-  </url>
-
-  <!-- courses -->
-
-   <url>
-      <loc>https://makemyresume.help/courses</loc>
-      <changefreq>weekly</changefreq>
-      <priority>0.9</priority>
-   </url>
-
-  <!-- About -->
-  <url>
-    <loc>https://www.makemyresume.help/about</loc>
-    <priority>0.6</priority>
-    <changefreq>monthly</changefreq>
-  </url>
-
-  <!-- Contact -->
-  <url>
-    <loc>https://www.makemyresume.help/contact</loc>
-    <priority>0.6</priority>
-    <changefreq>monthly</changefreq>
-  </url>
-
-  <!-- Privacy Policy -->
-  <url>
-    <loc>https://www.makemyresume.help/privacy-policy</loc>
-    <priority>0.5</priority>
-    <changefreq>yearly</changefreq>
-  </url>
-
-</urlset>
-
-
-
-  
+  <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+    <url>
+      <loc>https://makemyresume.help</loc>
+      <lastmod>2025-09-01T14:29:17.886Z</lastmod>
+    </url>
+    <url>
+      <loc>https://makemyresume.help/jobs</loc>
+      <lastmod>2025-09-01T14:29:17.886Z</lastmod>
+    </url>
+    
+  </urlset>

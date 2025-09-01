@@ -116,7 +116,20 @@ export default function Jobs() {
                     name="description"
                     content="Browse latest IT, Non-IT, and Govt jobs. Find company details, job roles, locations, and apply online."
                 />
+                <script type="application/ld+json">
+                    {JSON.stringify({
+                        "@context": "https://schema.org",
+                        "@type": "ItemList",
+                        itemListElement: filteredJobs.map((job, i) => ({
+                            "@type": "ListItem",
+                            position: i + 1,
+                            url: `https://makemyresume.net/jobs/${job.slug}`,
+                            name: `${job.role} at ${job.company}`,
+                        })),
+                    })}
+                </script>
             </Helmet>
+
 
             <div className="max-w-6xl mx-auto p-6">
                 <h2 className="text-3xl font-extrabold mb-6 text-gray-800 tracking-tight">
