@@ -1,7 +1,12 @@
-
-
+# Allow all search engines to crawl public pages
 User-agent: *
+Disallow: /admin
+Disallow: /adminjobs
+Disallow: /serviceAccountKey.json
+Disallow: /generate-sitemap.js
+
+# Allow everything else
 Allow: /
 
-Sitemap: https://makemyresume.help/sitemap.xml
-
+# Sitemap location
+Sitemap: https://www.makemyresume.help/sitemap.xml
