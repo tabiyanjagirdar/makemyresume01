@@ -132,23 +132,8 @@ export default function JobDetails() {
                     </p>
                 </div>
 
-                <div className="flex justify-center mb-6">
-                    <div className="bg-white shadow-md rounded-2xl p-3 border border-gray-200">
 
-                        <a href="https://www.revenuecpmgate.com/hpppsb5n7r?key=9dfa5af7ea37a41696d231fc108bdbed">
-                            <img
-                                src={applyNowAd}
-                                alt="Advertisement"
-                                className="rounded-2xl"
-                            />
-                        </a>
-                        <p className="text-xs text-gray-500 text-center mt-2">
-                            Advertisement
-                        </p>
-                    </div>
-                </div>
 
-                <div className="flex justify-center align-middle text-3xl text-red-500 font-bold">Apply Link in bottom</div>
 
                 {/* Top Banner Ad */}
                 <div className="flex justify-center mb-6">
