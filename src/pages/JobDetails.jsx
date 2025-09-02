@@ -134,7 +134,7 @@ export default function JobDetails() {
 
                 <div className="flex justify-center mb-6">
                     <div className="bg-white shadow-md rounded-2xl p-3 border border-gray-200">
-                        {/* Clickable image */}
+
                         <a href="https://www.revenuecpmgate.com/hpppsb5n7r?key=9dfa5af7ea37a41696d231fc108bdbed">
                             <img
                                 src={applyNowAd}
