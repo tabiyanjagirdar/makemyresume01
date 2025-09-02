@@ -5,7 +5,7 @@ import { doc, getDoc } from "firebase/firestore";
 import { Helmet } from "react-helmet";
 import { motion } from "framer-motion";
 import { FaWhatsapp } from "react-icons/fa";
-import ScrollAd from "./components/ScrollAd";
+
 import Ad300x250 from "./components/Ad300x250";
 
 function CourseDetails() {
@@ -21,23 +21,32 @@ function CourseDetails() {
         fetchCourse();
     }, [id]);
 
-    // Inject Native Ad script
+    // Inject ads after course loads
     useEffect(() => {
-        const container = document.getElementById("container-eb5de8b2878b13d29759ac560b672011");
+        if (!course) return;
 
-        if (container) {
-            // Clear any previous content
-            container.innerHTML = "";
-
+        // Native Ad
+        const nativeContainer = document.getElementById("container-eb5de8b2878b13d29759ac560b672011");
+        if (nativeContainer) {
+            nativeContainer.innerHTML = "";
             const script = document.createElement("script");
             script.src = "//pl27485819.revenuecpmgate.com/eb5de8b2878b13d29759ac560b672011/invoke.js";
             script.async = true;
             script.setAttribute("data-cfasync", "false");
-
-            container.appendChild(script);
+            nativeContainer.appendChild(script);
         }
-    }, [course]); // Run when course loads
 
+        // Social Bar / Second Ad
+        const socialAdContainer = document.getElementById("container-fae5beaf948081b360878f46b4841b73");
+        if (socialAdContainer) {
+            socialAdContainer.innerHTML = "";
+            const adScript = document.createElement("script");
+            adScript.type = "text/javascript";
+            adScript.src = "//pl27485813.revenuecpmgate.com/fa/e5/be/fae5beaf948081b360878f46b4841b73.js";
+            adScript.async = true;
+            socialAdContainer.appendChild(adScript);
+        }
+    }, [course]);
 
     if (!course) return <p className="text-center mt-10 text-gray-500 animate-pulse">Loading...</p>;
 
@@ -96,13 +105,19 @@ function CourseDetails() {
                         {course.description}
                     </p>
 
-                    {/* Native Ad Above Enroll Now */}
                     {/* Native Ad */}
                     <div
                         id="container-eb5de8b2878b13d29759ac560b672011"
                         className="flex justify-center w-full max-w-md mx-auto mb-6"
+                        style={{ minHeight: "250px" }} // ensures ad renders
                     />
 
+                    {/* Social Bar / Second Ad */}
+                    <div
+                        id="container-fae5beaf948081b360878f46b4841b73"
+                        className="flex justify-center w-full max-w-md mx-auto mb-6"
+                        style={{ minHeight: "250px" }} // ensures ad renders
+                    />
 
                     {/* Action Buttons */}
                     <div className="flex flex-col sm:flex-row gap-4 mt-6">
@@ -137,11 +152,6 @@ function CourseDetails() {
                     </div>
                 </div>
             </motion.div>
-
-            {/* Scroll Advertisement */}
-            <div className="mt-6">
-                <ScrollAd />
-            </div>
         </div>
     );
 }
