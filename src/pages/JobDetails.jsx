@@ -154,7 +154,7 @@ export default function JobDetails() {
                 </div>
 
                 {/* Native Ad */}
-                <div className="bg-green-50 border border-green-200 rounded-lg shadow p-4 mt-10 text-center">
+                {/* <div className="bg-green-50 border border-green-200 rounded-lg shadow p-4 mt-10 text-center">
                     <p className="text-xs uppercase font-semibold text-green-700 mb-2">
                         Sponsored
                     </p>
@@ -165,7 +165,7 @@ export default function JobDetails() {
                     <p className="text-sm text-green-700 mt-2">
                         🔔 Don’t miss these exclusive offers
                     </p>
-                </div>
+                </div> */}
 
                 {/* Apply / Back Buttons */}
                 <div className="flex flex-col md:flex-row gap-4">
