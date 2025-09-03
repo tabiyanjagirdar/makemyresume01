@@ -6,7 +6,7 @@ import { collection, getDocs } from "firebase/firestore";
 import { Helmet } from "react-helmet";
 import Ad300x250 from "../components/Ad300x250";
 import { FaWhatsapp } from "react-icons/fa";
-import ScrollAd from "../components/ScrollAd";
+// import ScrollAd from "../components/ScrollAd";
 import applyNowAd from '../assets/applynowad.png';
 
 
@@ -198,7 +198,7 @@ export default function JobDetails() {
                     </a>
                 </div>
 
-                <ScrollAd />
+                {/* <ScrollAd /> */}
 
             </div>
         </div>
