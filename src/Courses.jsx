@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import { db } from "./firebase";
 import { collection, getDocs, deleteDoc, doc } from "firebase/firestore";
 import Ad300x250 from "./components/Ad300x250";
-// import ScrollAd from "./components/ScrollAd";
+import ScrollAd from "./components/ScrollAd";
 import { Helmet } from "react-helmet";
 
 function Courses() {
@@ -161,7 +161,7 @@ function Courses() {
                 </a>
             </div>
 
-            {/* <ScrollAd /> */}
+            <ScrollAd />
         </div>
     );
 }

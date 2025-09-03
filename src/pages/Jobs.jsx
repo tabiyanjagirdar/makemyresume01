@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { db } from "../firebase";
 import { collection, getDocs } from "firebase/firestore";
 import { Helmet } from "react-helmet";
-// import ScrollAd from "../components/ScrollAd";
+import ScrollAd from "../components/ScrollAd";
 
 export default function Jobs() {
     const [jobs, setJobs] = useState([]);
@@ -226,7 +226,7 @@ export default function Jobs() {
                     </p>
                 </div>
             </div>
-            {/* <ScrollAd /> */}
+            <ScrollAd />
             {/* Bottom sticky 468x60 ad */}
             <div
                 ref={sticky468BottomRef}

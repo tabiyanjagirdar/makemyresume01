@@ -106,18 +106,18 @@ function CourseDetails() {
                     </p>
 
                     {/* Native Ad */}
-                    {/* <div
+                    <div
                         id="container-eb5de8b2878b13d29759ac560b672011"
                         className="flex justify-center w-full max-w-md mx-auto mb-6"
                         style={{ minHeight: "250px" }} // ensures ad renders
-                    /> */}
+                    />
 
                     {/* Social Bar / Second Ad */}
-                    {/* <div
+                    <div
                         id="container-fae5beaf948081b360878f46b4841b73"
                         className="flex justify-center w-full max-w-md mx-auto mb-6"
                         style={{ minHeight: "250px" }} // ensures ad renders
-                    /> */}
+                    />
 
                     {/* Action Buttons */}
                     <div className="flex flex-col sm:flex-row gap-4 mt-6">
