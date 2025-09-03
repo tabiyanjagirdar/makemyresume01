@@ -111,10 +111,10 @@ export default function Jobs() {
     return (
         <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 relative pb-32">
             <Helmet>
-                <title>Open Jobs | MakeMyResume</title>
+                <title>Open Jobs | Jobs in Banglore</title>
                 <meta
                     name="description"
-                    content="Browse latest IT, Non-IT, and Govt jobs. Find company details, job roles, locations, and apply online."
+                    content="Jobs in BangloreBrowse latest IT, Non-IT, and Govt jobs. Find company details, job roles, locations, and apply online."
                 />
                 <script type="application/ld+json">
                     {JSON.stringify({
