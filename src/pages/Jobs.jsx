@@ -114,7 +114,7 @@ export default function Jobs() {
                 <title>Open Jobs | Jobs in Banglore</title>
                 <meta
                     name="description"
-                    content="Jobs in BangloreBrowse latest IT, Non-IT, and Govt jobs. Find company details, job roles, locations, and apply online."
+                    content="Jobs in Banglore, Browse latest IT, Non-IT, and Govt jobs. Find company details, job roles, locations, and apply online."
                 />
                 <script type="application/ld+json">
                     {JSON.stringify({

@@ -196,16 +196,32 @@ const App = () => {
 
         {/* Footer */}
         <footer className="w-full bg-black text-white py-6">
-          <div className="max-w-7xl mx-auto px-4 text-center">
-            <a href="/privacy-policy" className="text-sm text-gray-600 hover:underline">
+          <div className="max-w-7xl mx-auto px-4 text-center space-y-4">
+            {/* Privacy Policy */}
+            <a
+              href="/privacy-policy"
+              className="block text-sm text-gray-400 hover:text-gray-200 hover:underline"
+            >
               Privacy Policy
             </a>
-            <p className="text-sm">
+
+            {/* Copyright */}
+            <p className="text-sm text-gray-400">
               © {new Date().getFullYear()} MakeMyResume. All rights reserved.
             </p>
 
+            {/* CTA Button */}
+            <a
+              href="https://s3.eu-west-2.amazonaws.com/certificate-courses-online-free/Free+Premium+Courses+with+Certificate.pdf"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 rounded-xl px-6 py-3 font-semibold bg-blue-600 hover:bg-blue-700 text-white shadow-md transition focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2"
+            >
+              Free Premium Courses with Certificate (PDF)
+            </a>
           </div>
         </footer>
+
 
         {/* Analytics */}
         <Analytics />
