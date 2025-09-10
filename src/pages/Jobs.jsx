@@ -226,7 +226,7 @@ export default function Jobs() {
                     </p>
                 </div>
             </div>
-            <ScrollAd />
+            {/* <ScrollAd /> */}
             {/* Bottom sticky 468x60 ad */}
             <div
                 ref={sticky468BottomRef}
