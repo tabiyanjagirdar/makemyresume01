@@ -198,7 +198,7 @@ export default function JobDetails() {
                     </a>
                 </div>
 
-                {/* <ScrollAd /> */}
+                <ScrollAd />
 
             </div>
         </div>
